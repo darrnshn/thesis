@@ -1,5 +1,9 @@
 \chapter{Background}
 
+This chapter provides the mathematical background for the rest of this work. We begin by introducing two seemingly unrelated concepts: Hilbert spaces and positive-definite kernels, before establishing a remarkable connection between them through the theory of reproducing kernel Hilbert spaces (RKHS). The chapter concludes with a discussion of we can embed probability distributions can in these spaces and what benefits this technique brings.
+
+\section{Vector Spaces}
+
 \begin{definition}[Vector space]
 A \defn{vector space} over a field $\mathcal{F}$ consists of a set $\mathcal{V}$ and two binary operations: \defn{vector addition} (denoted by $\mathbf{u} + \mathbf{v}$ for $\mathbf{u}, \mathbf{v} \in \mathcal{V}$) and \defn{scalar multiplication} (denoted by $\alpha \mathbf{v}$ for $\alpha \in \mathcal{F}, \mathbf{v} \in \mathcal{V}$). These two operations must satisfy the following axioms:
 
@@ -17,11 +21,14 @@ A \defn{vector space} over a field $\mathcal{F}$ consists of a set $\mathcal{V}$
 
 \end{definition}
 
-
-
 \begin{definition}[Inner product space]
 A inner product space is a vector space with an extra operation called the \defn{inner product}: $\innerProd{\cdot, \cdot} : \mathcal{V} \times \mathcal{V} \to \mathcal{F}$ that satisfies the following axioms:
 \end{definition}
+
+\section{Hilbert Spaces}
+
+
+\section{Kernels}
 
 \begin{definition}[Gram matrix]
 Given a kernel $k : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ and observations $\{ \mathbf{x}_1, \dotsc, \mathbf{x}_n \} \in \mathcal{X}$, the $n \times n$ real matrix $K$ with elements
@@ -67,6 +74,7 @@ Note that this decomposition is not unique, since we can also write
 2
 \end{equation}
 
+\section{Reproducing Kernel Hilbert Spaces}
 However, there is a special feature space that is unique to a given kernel. 
 
 Let $\mathcal{F}$ be the space of functions mapping $\mathcal{X}$ to $\mathbb{R}$. We use the feature map $\phi(x) : \mathcal{X} \to \mathcal{F}$:
@@ -103,6 +111,8 @@ Suppose $k(\cdot, \cdot)$ is a symmetric, positive definite kernel on a set $\ma
 \end{theorem}
 
 Let $X$ be a random variable with codomain $\Omega$ and probability distribution $P(X)$. Also let $k$ be a kernel on $\Omega \times \Omega$. From the Moore-Aronszajn Theorem, we know there exists an unique RKHS $\mathcal{H}$ where $k$ is a reproducing kernel. Furthermore, we can define the implicit feature map $\phi(x) \defeq k(x, \cdot)$ from $\Omega$ to $\mathcal{H}$ so that $k(x, x^\prime) = \innerProd{phi(x), phi(x)^\prime}$.
+
+\section{Kernel Embedding of Distributions}
 
 \begin{definition}[Mean embedding]
 The embedding of $P(X)$ in $\mathcal{H}$ via the \defn{mean embedding} is given by
