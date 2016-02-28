@@ -1,31 +1,50 @@
 \chapter{Background}
 
-This chapter provides the mathematical background for the rest of this work. We begin by introducing two seemingly unrelated concepts: Hilbert spaces and positive-definite kernels, before establishing a remarkable connection between them through the theory of reproducing kernel Hilbert spaces (RKHS). The chapter concludes with a discussion of we can embed probability distributions can in these spaces and what benefits this technique brings.
+\todo{Reword section}
+This chapter provides the mathematical background for the rest of this work. We begin by introducing two seemingly unrelated concepts: Hilbert spaces and positive-definite kernels, before establishing a remarkable connection between them through the theory of reproducing kernel Hilbert spaces (RKHS). The chapter concludes with a discussion of how we can embed probability distributions can in these spaces and what benefits this brings.
+
+\todo{Do we begin with fields?}
 
 \section{Vector Spaces}
+We begin with \defn{vector spaces}. A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multipied by numbers (called \defn{scalars}). More formally,
 
 \begin{definition}[Vector space]
-A \defn{vector space} over a field $\mathcal{F}$ consists of a set $\mathcal{V}$ and two binary operations: \defn{vector addition} (denoted by $\mathbf{u} + \mathbf{v}$ for $\mathbf{u}, \mathbf{v} \in \mathcal{V}$) and \defn{scalar multiplication} (denoted by $\alpha \mathbf{v}$ for $\alpha \in \mathcal{F}, \mathbf{v} \in \mathcal{V}$). These two operations must satisfy the following axioms:
-
-\begin{axiom}[Associativity of addition\nopunct]
-	\begin{equation}
-		\mathbf{u} + (\mathbf{v} + \mathbf{w}) = (\mathbf{u} + \mathbf{v}) + \mathbf{w}
-    \end{equation}
-\end{axiom}
-
-\begin{axiom}[Commutativity of addition]
-    \begin{equation}
-    	\mathbf{u} + \mathbf{v} = \mathbf{v} + \mathbf{u}
-    \end{equation}
-\end{axiom}
-
+A \defn{vector space} over a field $\mathcal{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $+$ and a \defn{scalar multiplication} operation $\cdot$. It must obey the following axioms for any $u, v, w \in \mathcal{V}$ and $a, b \in \mathcal{F}$:
+\begin{description}
+  \item[Associativity] $u + (v + w) = (u + v) + w$
+  \item[Commutativity] $u + v = v + w$ and $a \cdot u = u \cdot a$
+  \item[Existence of Identity] There exists elements $0 \in \mathcal{V}$ and $1 \in \mathcal{F}$ such that $0 + u = u$ and $1 \cdot u = u$.
+  \item[Existence of Inverse] For every element $u$, there exists an element $-u \in \mathcal{V}$ such that $u + (-u) = 0$.
+  \item[Distributivity] $a \cdot (u + v) = (a \cdot u) + (a \cdot v)$ and $(a + b) \cdot u = (a \cdot u) + (b \cdot v)$
+\end{enumerate}
 \end{definition}
 
-\begin{definition}[Inner product space]
+While the canonical example of a vector space is $\mathbb{R}^N$, the space of real n-dimensional vectors, this definition is general enough to define vector spaces of other mathematical objects. \todo{Example using vector space of functions}.
+
+Starting with a vector space, we can add additional structure to create other types of spaces:
+
+\todo{Should we work with inner product spaces or just inner products?}
+
+\begin{definition}[Inner product spaces]
 A inner product space is a vector space with an extra operation called the \defn{inner product}: $\innerProd{\cdot, \cdot} : \mathcal{V} \times \mathcal{V} \to \mathcal{F}$ that satisfies the following axioms:
 \end{definition}
 
+For example, we can extend the space of Euclidean vectors $\mathbb{R}^N$ with the dot product to form a inner product space:
+
+\begin{equation}
+  \left\langle \begin{bmatrix} x_1 \\ \vdots \\ x_n \end{bmatrix},\begin{bmatrix} y_1 \\ \vdots \\ y_n \end{bmatrix} \right\rangle := x^\text{T} y = \sum_{i=1}^n x_i y_i
+\end{equation}
+
+The inner product can 
+
+\section{Norms}
+
+\section{Complete Vector Spaces}
+
 \section{Hilbert Spaces}
+
+\begin{definition}[Hilbert space]
+A Hilbert
 
 
 \section{Kernels}
