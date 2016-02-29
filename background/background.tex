@@ -6,27 +6,31 @@ This chapter provides the mathematical background for the rest of this work. We 
 \todo{Do we begin with fields?}
 
 \section{Vector Spaces}
-We begin with \defn{vector spaces}. A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multipied by numbers (called \defn{scalars}). More formally,
+We begin with \defn{vector spaces}. A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multiplied by numbers (called \defn{scalars}). More formally,
 
 \begin{definition}[Vector space]
-A \defn{vector space} over a field $\mathcal{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $+$ and a \defn{scalar multiplication} operation $\cdot$. It must obey the following axioms for any $u, v, w \in \mathcal{V}$ and $a, b \in \mathcal{F}$:
+A \defn{vector space} over a field $\mathcal{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathcal{F}$:
 \begin{description}
-  \item[Associativity] $u + (v + w) = (u + v) + w$
-  \item[Commutativity] $u + v = v + w$ and $a \cdot u = u \cdot a$
-  \item[Existence of Identity] There exists elements $0 \in \mathcal{V}$ and $1 \in \mathcal{F}$ such that $0 + u = u$ and $1 \cdot u = u$.
-  \item[Existence of Inverse] For every element $u$, there exists an element $-u \in \mathcal{V}$ such that $u + (-u) = 0$.
-  \item[Distributivity] $a \cdot (u + v) = (a \cdot u) + (a \cdot v)$ and $(a + b) \cdot u = (a \cdot u) + (b \cdot v)$
-\end{enumerate}
+  \item[Associativity] $\mathbf{u} \oplus (\mathbf{v} \oplus \mathbf{w}) = (\mathbf{u} \oplus \mathbf{v}) \oplus \mathbf{w}$
+  \item[Commutativity] $\mathbf{u} \oplus \mathbf{v} = \mathbf{v} \oplus \mathbf{w}$ and $a \otimes \mathbf{u} = \mathbf{u} \otimes a$
+  \item[Existence of Identity] There exists elements $\mathbf{0} \in \mathcal{V}$ and $1 \in \mathcal{F}$ such that $\mathbf{0} \oplus \mathbf{u} = \mathbf{u}$ and $1 \otimes \mathbf{u} = \mathbf{u}$.
+  \item[Existence of Inverse] For every element $\mathbf{u}$, there exists an element $-\mathbf{u} \in \mathcal{V}$ such that $\mathbf{u} \oplus (-\mathbf{u}) = \mathbf{0}$.
+  \item[Distributivity] $a \otimes (\mathbf{u} \oplus \mathbf{v}) = (a \otimes \mathbf{u}) \oplus (a \otimes \mathbf{v})$ and $(a + b) \otimes \mathbf{u} = (a \otimes \mathbf{u}) \oplus (b \cdot \mathbf{v})$
+\end{description}
 \end{definition}
 
-While the canonical example of a vector space is $\mathbb{R}^N$, the space of real n-dimensional vectors, this definition is general enough to define vector spaces of other mathematical objects. \todo{Example using vector space of functions}.
+While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^N$, this definition is general enough to define vector spaces of other mathematical objects. \todo{Example using vector space of functions}.
 
 Starting with a vector space, we can add additional structure to create other types of spaces:
 
 \todo{Should we work with inner product spaces or just inner products?}
 
 \begin{definition}[Inner product spaces]
-A inner product space is a vector space with an extra operation called the \defn{inner product}: $\innerProd{\cdot, \cdot} : \mathcal{V} \times \mathcal{V} \to \mathcal{F}$ that satisfies the following axioms:
+A inner product space is a vector space with an extra operation called the \defn{inner product}: $\innerProd{\cdot, \cdot} : \mathcal{V} \times \mathcal{V} \to \mathcal{F}$ that satisfies the following axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z} \in \mathcal{V}$ and $a \in \mathcal{F}$:
+\begin{description}
+	\item[Linearity in First Argument] $\innerProd{a \otimes \mathbf{u}, \mathbf{v}} = a \cdot \innerProd{\mathbf{u}, \mathbf{v}}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}} = \innerProd{\mathbf{u}, \mathbf{w}} + \innerProd{\mathbf{v}, \mathbf{w}}$.
+    \item[Positive-definiteness] $\innerProd{v, w}
+\end{description}
 \end{definition}
 
 For example, we can extend the space of Euclidean vectors $\mathbb{R}^N$ with the dot product to form a inner product space:
@@ -45,6 +49,7 @@ The inner product can
 
 \begin{definition}[Hilbert space]
 A Hilbert
+\end{definition}
 
 
 \section{Kernels}
