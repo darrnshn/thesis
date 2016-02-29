@@ -10,7 +10,7 @@ Suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set
   \item Map elements of $S$ to another set $S^\prime$ and work within $S^\prime$ instead.
 \end{enumerate}
 
-The latter choice is advantageous if the new set $S^\prime$ is more convenient to work with. If we work in $S^\prime$, we get to exploit properties, theorems, computational savings, and intuition we have for $S^\prime$ to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
+The latter choice is advantageous if the new set $S^\prime$ is more convenient to work with. If we do this, we get to exploit properties, theorems, computational savings, and intuition we have for $S^\prime$ to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
 
 This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a reproducing kernel Hilbert space (RKHS), which makes them easier and more intuitive to manipulate.
 
@@ -22,47 +22,57 @@ This approach underpins the theory in this thesis. Instead of directly working w
 We begin with \defn{vector spaces}. A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multiplied by numbers (called \defn{scalars}). More formally,
 
 \begin{definition}[Vector space]
-A \defn{vector space} over a field $\mathcal{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathcal{F}$:
+A \defn{vector space} over a field $\mathbb{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathbb{F}$:
 \begin{description}
   \item[Associativity] $\mathbf{u} \oplus (\mathbf{v} \oplus \mathbf{w}) = (\mathbf{u} \oplus \mathbf{v}) \oplus \mathbf{w}$
   \item[Commutativity] $\mathbf{u} \oplus \mathbf{v} = \mathbf{v} \oplus \mathbf{w}$ and $a \otimes \mathbf{u} = \mathbf{u} \otimes a$
-  \item[Existence of Identity] There exists elements $\mathbf{0} \in \mathcal{V}$ and $1 \in \mathcal{F}$ such that $\mathbf{0} \oplus \mathbf{u} = \mathbf{u}$ and $1 \otimes \mathbf{u} = \mathbf{u}$.
+  \item[Existence of Identity] There exists elements $\mathbf{0} \in \mathcal{V}$ and $1 \in \mathbb{F}$ such that $\mathbf{0} \oplus \mathbf{u} = \mathbf{u}$ and $1 \otimes \mathbf{u} = \mathbf{u}$.
   \item[Existence of Inverse] For every element $\mathbf{u}$, there exists an element $-\mathbf{u} \in \mathcal{V}$ such that $\mathbf{u} \oplus (-\mathbf{u}) = \mathbf{0}$.
   \item[Distributivity] $a \otimes (\mathbf{u} \oplus \mathbf{v}) = (a \otimes \mathbf{u}) \oplus (a \otimes \mathbf{v})$ and $(a + b) \otimes \mathbf{u} = (a \otimes \mathbf{u}) \oplus (b \cdot \mathbf{v})$
 \end{description}
 \end{definition}
 
-While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^N$, this definition is general enough to define vector spaces of other mathematical objects. For instance, $\mathbb{R}^\mathbb{R}$, the set of functions from $\mathbb{R}$ to $\mathbb{R}$, is a vector space. In this space, vector addition and scalar multiplication can be defined as:
+While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^n$, this definition is general enough to define vector spaces of other mathematical objects. For instance, $\mathbb{R}^\mathbb{R}$, the set of functions from $\mathbb{R}$ to $\mathbb{R}$, is a vector space. In this space, vector addition and scalar multiplication can be defined as:
 
 \begin{align}
-  (f \oplus g)(x) &\defeq f(x) g(x)
+  (f \oplus g)(x) &\defeq f(x) g(x) \\
   (a \otimes f)(x) &\defeq a f(x)
 \end{align}
 
 for $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$.
 
-Starting with a vector space, we can add additional structure to create other types of spaces:
+Starting with a vector space, we can add additional operations to it to form richer structures:
 
 \todo{Should we work with inner product spaces or just inner products?}
 
-\begin{definition}[Inner product spaces]
-A inner product space is a vector space with an extra operation called the \defn{inner product}: $\innerProd{\cdot, \cdot} : \mathcal{V} \times \mathcal{V} \to \mathcal{F}$ that satisfies the following axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z} \in \mathcal{V}$ and $a \in \mathcal{F}$:
+\begin{definition}[Inner product space]
+An \defn{inner product space} is a vector space $\mathcal{V}$ over $\mathbb{F}$ endowed with a map $\innerProd{\cdot, \cdot}_\mathcal{V} : \mathcal{V} \times \mathcal{V} \to \mathbb{F}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a \in \mathbb{F}$:
 \begin{description}
   \item[Linearity in First Argument] $\innerProd{a \otimes \mathbf{v}, \mathbf{w}} = a \cdot \innerProd{\mathbf{v}, \mathbf{w}}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}} = \innerProd{\mathbf{u}, \mathbf{w}} + \innerProd{\mathbf{v}, \mathbf{w}}$.
-  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}} \geq 0$, equality holds when $\mathbf{v} = \mathbf{0}$.
+  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}} = 0 \implies \mathbf{v} = \mathbf{0}$.
   \item[Conjugate symmetry] $\innerProd{\mathbf{v}, \mathbf{w}} = \innerProd{\mathbf{w}, \mathbf{v}}$.
 \end{description}
 \end{definition}
 
-For example, we can extend the space of Euclidean vectors $\mathbb{R}^N$ with the dot product to form a inner product space:
+For example, we can extend the space $\mathbb{R}^n$ with the dot product to form a inner product space:
 
 \begin{equation}
-  \left\langle \begin{bmatrix} x_1 \\ \vdots \\ x_n \end{bmatrix},\begin{bmatrix} y_1 \\ \vdots \\ y_n \end{bmatrix} \right\rangle := x^\text{T} y = \sum_{i=1}^n x_i y_i
+  \innerProd{\mathbf{x}, \mathbf{y}}_{\mathbb{R}^n} \defeq \mathbf{x}^\intercal \mathbf{y} = \sum_{i=1}^n x_i y_i
 \end{equation}
 
-The inner product can 
+\note{mention how inner products can be seen as similarity?}
 
 \section{Norms}
+Another useful operation to have is the ability to find the ``size'' of a vector. We can do this by adding a \defn{norm} to a vector space to form a \defn{normed vector space}.
+
+\begin{definition}[Norm]
+Given a vector space $\mathcal{V}$ over \mathbb{R}, a \defn{norm} on $\mathcal{V}$ is a function $\normLL{\cdot} : \mathcal{V} \to \mathbb{R}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
+\begin{description}
+  \item[Non-negativity] $\normLL{\mathbf{v}} \geq 0$ and $\normLL{\mathbf{v}} = 0 \implies \mathbf{v} = \mathbf{0}$.
+  \item[Homogeneity] $\normLL{a \mathbf{v}} = \normL{a} \normLL{\mathbf{v}}$.
+  \item[Triangular inequality] $\normLL{\mathbf{u} + \mathbf{v}} \leq \normLL{\mathbf{u}} + \normLL{\mathbf{v}}$.
+\end{description}
+\end{definition}
 
 \section{Complete Vector Spaces}
 
@@ -122,7 +132,7 @@ Note that this decomposition is not unique, since we can also write
 \section{Reproducing Kernel Hilbert Spaces}
 However, there is a special feature space that is unique to a given kernel. 
 
-Let $\mathcal{F}$ be the space of functions mapping $\mathcal{X}$ to $\mathbb{R}$. We use the feature map $\phi(x) : \mathcal{X} \to \mathcal{F}$:
+Let $\mathbb{F}$ be the space of functions mapping $\mathcal{X}$ to $\mathbb{R}$. We use the feature map $\phi(x) : \mathcal{X} \to \mathbb{F}$:
 \begin{equation}
 	\phi(x) = k(x, \cdot)
 \end{equation}
