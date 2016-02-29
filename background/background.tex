@@ -3,16 +3,16 @@
 This chapter provides the mathematical background for this work.  We begin by introducing two seemingly unrelated concepts: Hilbert spaces and positive-definite kernels, before establishing a remarkable connection between them through the theory of reproducing kernel Hilbert spaces (RKHS). These spaces can be used to embed and manipulate probability distributions. The chapter concludes with some properties of this embedding technique and what benefits it brings.
 
 \section{Introduction}
-Suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). We have two choices: we can either
+Suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). We can either:
 
 \begin{enumerate}
   \item Develop the necessary theory to work directly with $S$.
-  \item Map elements of $S$ to another set $S^\prime$ and work within the new set $S^\prime$ instead.
+  \item Map elements of $S$ to another set $S^\prime$ and work within $S^\prime$ instead.
 \end{enumerate}
 
-The latter choice is advantageous if the new set $S^\prime$ is more convenient to work with than $S$. If we work in $S^\prime$, any properties, theorems, computational savings, and intuition we have for $S^\prime$ will be available to us. All we need is a ``embedding'' or ``representation theorem'' to transform elements of $S$ to $S^\prime$.
+The latter choice is advantageous if the new set $S^\prime$ is more convenient to work with. If we work in $S^\prime$, we get to exploit properties, theorems, computational savings, and intuition we have for $S^\prime$ to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
 
-This approach underpins the theory in this thesis. Instead of working with probability distributions directly, we embed them into a reproducing kernel Hilbert space (RKHS) which makes them easier and more intuitive to manipulate.
+This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a reproducing kernel Hilbert space (RKHS), which makes them easier and more intuitive to manipulate.
 
 \todo{Merge with the introduction metadiscourse?}
 
