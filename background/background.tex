@@ -1,7 +1,20 @@
 \chapter{Background}
 
-\todo{Reword section}
-This chapter provides the mathematical background for the rest of this work. We begin by introducing two seemingly unrelated concepts: Hilbert spaces and positive-definite kernels, before establishing a remarkable connection between them through the theory of reproducing kernel Hilbert spaces (RKHS). The chapter concludes with a discussion of how we can embed probability distributions can in these spaces and what benefits this brings.
+This chapter provides the mathematical background for this work.  We begin by introducing two seemingly unrelated concepts: Hilbert spaces and positive-definite kernels, before establishing a remarkable connection between them through the theory of reproducing kernel Hilbert spaces (RKHS). These spaces can be used to embed and manipulate probability distributions. The chapter concludes with some properties of this embedding technique and what benefits it brings.
+
+\section{Introduction}
+Suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). We have two choices: we can either
+
+\begin{enumerate}
+  \item Develop the necessary theory to work directly with $S$.
+  \item Map elements of $S$ to another set $S^\prime$ and work within the new set $S^\prime$ instead.
+\end{enumerate}
+
+The latter choice is advantageous if the new set $S^\prime$ is more convenient to work with than $S$. If we work in $S^\prime$, any properties, theorems, computational savings, and intuition we have for $S^\prime$ will be available to us. All we need is a ``embedding'' or ``representation theorem'' to transform elements of $S$ to $S^\prime$.
+
+This approach underpins the theory in this thesis. Instead of working with probability distributions directly, we embed them into a reproducing kernel Hilbert space (RKHS) which makes them easier and more intuitive to manipulate.
+
+\todo{Merge with the introduction metadiscourse?}
 
 \todo{Do we begin with fields?}
 
@@ -19,7 +32,14 @@ A \defn{vector space} over a field $\mathcal{F}$ consists of a set $\mathcal{V}$
 \end{description}
 \end{definition}
 
-While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^N$, this definition is general enough to define vector spaces of other mathematical objects. \todo{Example using vector space of functions}.
+While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^N$, this definition is general enough to define vector spaces of other mathematical objects. For instance, $\mathbb{R}^\mathbb{R}$, the set of functions from $\mathbb{R}$ to $\mathbb{R}$, is a vector space. In this space, vector addition and scalar multiplication can be defined as:
+
+\begin{align}
+  (f \oplus g)(x) &\defeq f(x) g(x)
+  (a \otimes f)(x) &\defeq a f(x)
+\end{align}
+
+for $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$.
 
 Starting with a vector space, we can add additional structure to create other types of spaces:
 
@@ -28,8 +48,9 @@ Starting with a vector space, we can add additional structure to create other ty
 \begin{definition}[Inner product spaces]
 A inner product space is a vector space with an extra operation called the \defn{inner product}: $\innerProd{\cdot, \cdot} : \mathcal{V} \times \mathcal{V} \to \mathcal{F}$ that satisfies the following axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z} \in \mathcal{V}$ and $a \in \mathcal{F}$:
 \begin{description}
-	\item[Linearity in First Argument] $\innerProd{a \otimes \mathbf{u}, \mathbf{v}} = a \cdot \innerProd{\mathbf{u}, \mathbf{v}}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}} = \innerProd{\mathbf{u}, \mathbf{w}} + \innerProd{\mathbf{v}, \mathbf{w}}$.
-    \item[Positive-definiteness] $\innerProd{v, w}
+  \item[Linearity in First Argument] $\innerProd{a \otimes \mathbf{v}, \mathbf{w}} = a \cdot \innerProd{\mathbf{v}, \mathbf{w}}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}} = \innerProd{\mathbf{u}, \mathbf{w}} + \innerProd{\mathbf{v}, \mathbf{w}}$.
+  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}} \geq 0$, equality holds when $\mathbf{v} = \mathbf{0}$.
+  \item[Conjugate symmetry] $\innerProd{\mathbf{v}, \mathbf{w}} = \innerProd{\mathbf{w}, \mathbf{v}}$.
 \end{description}
 \end{definition}
 
