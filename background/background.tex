@@ -1,18 +1,20 @@
 \chapter{Background}
-
-This chapter provides the mathematical background for this work.  We begin by introducing two seemingly unrelated concepts: Hilbert spaces and positive-definite kernels, before establishing a remarkable connection between them through the theory of reproducing kernel Hilbert spaces (RKHS). These spaces can be used to embed and manipulate probability distributions. The chapter concludes with some properties of this embedding technique and what benefits it brings.
-
-\section{Introduction}
-Suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). We can either:
+This chapter provides the mathematical background for this work. We begin with some motivation for the theory. Suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). We can either:
 
 \begin{enumerate}
   \item Develop the necessary theory to work directly with $S$.
   \item Map elements of $S$ to another set $S^\prime$ and work within $S^\prime$ instead.
 \end{enumerate}
 
-The latter choice is advantageous if the new set $S^\prime$ is more convenient to work with. If we do this, we get to exploit properties, theorems, computational savings, and intuition we have for $S^\prime$ to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
+The latter choice is advantageous if the new set $S^\prime$ is more convenient to work with. If we do this, we can exploit properties, theorems, computational savings, and intuition we have for $S^\prime$ to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
 
-This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a reproducing kernel Hilbert space (RKHS), which makes them easier and more intuitive to manipulate.
+This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a Hilbert space. Mapping to a Hilbert space has several benefits:
+
+\begin{itemize}
+	\item Hilbert spaces are a generalisation of the Euclidean space, so we can use our geometric intuition to .
+    \item They are frequently used in mathematics and physics/powerful.
+    \item Partially due to its intuitive basis on Euclidean space, they ... 
+\end{itemize}
 
 \todo{Merge with the introduction metadiscourse?}
 
@@ -48,9 +50,9 @@ Starting with a vector space, we can add additional operations to it to form ric
 \begin{definition}[Inner product space]
 An \defn{inner product space} is a vector space $\mathcal{V}$ over $\mathbb{F}$ endowed with a map $\innerProd{\cdot, \cdot}_\mathcal{V} : \mathcal{V} \times \mathcal{V} \to \mathbb{F}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a \in \mathbb{F}$:
 \begin{description}
-  \item[Linearity in First Argument] $\innerProd{a \otimes \mathbf{v}, \mathbf{w}} = a \cdot \innerProd{\mathbf{v}, \mathbf{w}}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}} = \innerProd{\mathbf{u}, \mathbf{w}} + \innerProd{\mathbf{v}, \mathbf{w}}$.
-  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}} = 0 \implies \mathbf{v} = \mathbf{0}$.
-  \item[Conjugate symmetry] $\innerProd{\mathbf{v}, \mathbf{w}} = \innerProd{\mathbf{w}, \mathbf{v}}$.
+  \item[Linearity] $\innerProd{a \otimes \mathbf{v}, \mathbf{w}}_\mathcal{V} = a \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{V}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}}_\mathcal{V} = \innerProd{\mathbf{u}, \mathbf{w}}_\mathcal{V} + \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{V}$.
+  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{V} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{V} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
+  \item[Conjugate symmetry] $\innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{V} = \innerProd{\mathbf{w}, \mathbf{v}}_\mathcal{V}$.
 \end{description}
 \end{definition}
 
@@ -60,18 +62,31 @@ For example, we can extend the space $\mathbb{R}^n$ with the dot product to form
   \innerProd{\mathbf{x}, \mathbf{y}}_{\mathbb{R}^n} \defeq \mathbf{x}^\intercal \mathbf{y} = \sum_{i=1}^n x_i y_i
 \end{equation}
 
-\note{mention how inner products can be seen as similarity?}
+\todo{mention how inner products can be seen as similarity?}
 
 \section{Norms}
 Another useful operation to have is the ability to find the ``size'' of a vector. We can do this by adding a \defn{norm} to a vector space to form a \defn{normed vector space}.
-
 \begin{definition}[Norm]
-Given a vector space $\mathcal{V}$ over \mathbb{R}, a \defn{norm} on $\mathcal{V}$ is a function $\normLL{\cdot} : \mathcal{V} \to \mathbb{R}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
+Given a vector space $\mathcal{V}$ over $\mathbb{R}$, a \defn{norm} on $\mathcal{V}$ is a function $\normLL{\cdot} : \mathcal{V} \to \mathbb{R}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
 \begin{description}
-  \item[Non-negativity] $\normLL{\mathbf{v}} \geq 0$ and $\normLL{\mathbf{v}} = 0 \implies \mathbf{v} = \mathbf{0}$.
+  \item[Non-negativity] $\normLL{\mathbf{v}} \geq 0$ and $\normLL{\mathbf{v}} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
   \item[Homogeneity] $\normLL{a \mathbf{v}} = \normL{a} \normLL{\mathbf{v}}$.
-  \item[Triangular inequality] $\normLL{\mathbf{u} + \mathbf{v}} \leq \normLL{\mathbf{u}} + \normLL{\mathbf{v}}$.
+  \item[Positive-definiteness] $\normLL{\mathbf{u} + \mathbf{v}} \leq \normLL{\mathbf{u}} + \normLL{\mathbf{v}}$.
 \end{description}
+\end{definition}
+
+\todo{Give another example for functions?}
+
+Given an inner product space $\mathcal{V}$ over $\mathbb{R}$ with inner product $\innerProd{\cdot, \cdot}_\mathcal{V} : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$, a natural norm to define for any vector $\mathbf{u} \in \mathcal{V}$ is:
+\begin{equation}
+	\normLL{\mathbf{u}} \defeq \sqrt{\innerProd{\mathbf{u}, \mathbf{u}}_\mathbf{V}} 
+\end{equation}
+
+This is the most common norm for a general inner product space, but other norms can be defined. \todo{Give example?}
+
+An interesting consequence of using this particular norm is that we can express the \defn{distance} between two vectors in terms of this norm.
+
+\begin{definition}[Distance ]
 \end{definition}
 
 \section{Complete Vector Spaces}
