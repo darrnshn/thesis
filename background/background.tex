@@ -87,8 +87,41 @@ The norm for the Banach space is given by:
 \end{definition}
 
 \section{Reproducing Kernel Hilbert Spaces}
-- bounded functional
-- derive kernel trick
+
+
+%\begin{definition}[Linear functional]
+%Given a vector space $\mathcal{V}$ over a field $\mathbb{F}$, a function $f : \mathcal{V} \to \mathbb{F}$ is a \defn{linear functional} if it satisfies the following conditions for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{F}$:
+%\begin{description}
+%  \item[Additivity] f(\mathbf{u} \oplus \mathbf{v}) = f(\mathbf{u}) + f(\mathbf{v})
+%  \item[Homogeneity of Degree 1] f(a \otimes \mathbf{u}) = a f(\mathbf{u})
+%\end{description}
+%\end{definition}
+
+A linear functional is a linear function from a vector space to its field.
+
+\begin{definition}[Evaluation functional]
+Given a Hilbert space $\mathcal{H}$ over real-valued functions on a set $\mathcal{X}$, the evaluation functional at a point $x \in \mathcal{X}$ is a linear functional $L_x \in \mathcal{H}$ that simply evaluates its argument at $x$:
+\begin{equation}
+  L_x(f) = f(x)
+\end{equation}
+
+\begin{definition}[Reproducing kernel Hilbert space]
+A Hilbert space \mathcal{H} is a reproducing kernel Hilbert space if, for all $x \in \mathcal{X}$, the evaluation functional $L_x$ is bounded:
+\begin{equation}
+  L_x(f) \leq M \normLL{f}_\mathcal{H} \forall f \in \mathcal{H}
+\end{equation}
+\end{definition}
+
+This definition, however, is hard to apply in practice, so we leverage 
+
+\begin{theorem}[Riesz representation theorem]
+If \mathcal{H} is a RKHS of real-valued functions on $\mathcal{X}$, then for every $x \in \mathcal{X}$, there is an unique\todo{is it?} function $K_x \in \mathcal{H}$ with the reproducing property,
+\begin{equation}
+  L_x(f) = \innerProd{K_x, f}_\mathcal{H} \forall f \in \mathcal{H}
+\end{equation}
+\end{theorem}
+
+We can then define the \defn{reproducing kernel} of $\mathcal{H}$ as $K(x, x^\prime) \defeq K_x(x^\prime) = \innerProd{K_x, K_{x^\prime}}_\mathcal{H}$.
 
 \section{Kernels}
 
