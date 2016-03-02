@@ -1,30 +1,24 @@
 \chapter{Background}
-This chapter provides the mathematical background for this work. We begin with some motivation for the theory. Suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). We can either:
+This chapter introduces the mathematical background for this work. By way of motivating the mathematical theory, suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). One possible approach would be to map elements of $S$ to another set $S^\prime$ and work within $S^\prime$ instead.
 
-\begin{enumerate}
-  \item Develop the necessary theory to work directly with $S$.
-  \item Map elements of $S$ to another set $S^\prime$ and work within $S^\prime$ instead.
-\end{enumerate}
-
-The latter choice is advantageous if the new set $S^\prime$ is more convenient to work with. If we do this, we can exploit properties, theorems, computational savings, and intuition we have for $S^\prime$ to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
+Compared to working directly with $S$, this has the advantage that any properties, theorems, computational savings, and intuition we have for $S^\prime$ become available to us to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
 
 This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a Hilbert space. Mapping to a Hilbert space has several benefits:
 
 \begin{itemize}
-	\item Hilbert spaces are a generalisation of the Euclidean space, so we can use our geometric intuition to .
-    \item They are frequently used in mathematics and physics/powerful.
-    \item Partially due to its intuitive basis on Euclidean space, they ... 
+  \item Hilbert spaces are a generalisation of the Euclidean space, so we can apply our geometric intuition.
+  \item They are frequently used in mathematics and physics/powerful.
+  \item Partially due to its intuitive basis on Euclidean space, they blah.
 \end{itemize}
 
-\todo{Merge with the introduction metadiscourse?}
-
-\todo{Do we begin with fields?}
+This chapter begins with the definition of a vector space, which is a useful algebraic structure. We then extend this structure to a Hilbert space by adding additional operations. We then define positive-definite kernels in order to ...
 
 \section{Vector Spaces}
 We begin with \defn{vector spaces}. A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multiplied by numbers (called \defn{scalars}). More formally,
 
 \begin{definition}[Vector space]
-A \defn{vector space} over a field $\mathbb{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathbb{F}$:
+A \defn{vector space} over a field\footnote{Informally, a field is a set of elements where addition and multiplication of these elements satisfy several axioms such as associativity and closure. An example of a field is the set of real numbers $\mathbb{R}$.} $\mathbb{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathbb{F}$:
+
 \begin{description}
   \item[Associativity] $\mathbf{u} \oplus (\mathbf{v} \oplus \mathbf{w}) = (\mathbf{u} \oplus \mathbf{v}) \oplus \mathbf{w}$
   \item[Commutativity] $\mathbf{u} \oplus \mathbf{v} = \mathbf{v} \oplus \mathbf{w}$ and $a \otimes \mathbf{u} = \mathbf{u} \otimes a$
@@ -34,7 +28,7 @@ A \defn{vector space} over a field $\mathbb{F}$ consists of a set $\mathcal{V}$,
 \end{description}
 \end{definition}
 
-While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^n$, this definition is general enough to define vector spaces of other mathematical objects. For instance, $\mathbb{R}^\mathbb{R}$, the set of functions from $\mathbb{R}$ to $\mathbb{R}$, is a vector space. In this space, vector addition and scalar multiplication can be defined as:
+While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^n$, we can also define vector spaces of other mathematical objects. For instance, $\mathbb{R}^\mathbb{R}$, the set of functions from $\mathbb{R}$ to $\mathbb{R}$, is a vector space. In this space, vector addition and scalar multiplication can be defined as:
 
 \begin{align}
   (f \oplus g)(x) &\defeq f(x) g(x) \\
@@ -43,29 +37,21 @@ While the canonical example of a vector space is the space of real n-dimensional
 
 for $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$.
 
-Starting with a vector space, we can add additional operations to it to form richer structures:
+\section{Banach Spaces}
+One nice property to have in our vector space is the notion of \defn{completeness}. Intuitively, a complete vector space is one with no ``holes'' in it. For example, the interval $(0, 1]$ (i.e. the set of real numbers $0 < x \leq 1$) is not complete since there is a hole at $0$, even though we can get arbitrarily close to $0$ without leaving the space.
 
-\todo{Should we work with inner product spaces or just inner products?}
+We now capture this intuition formally using Cauchy sequences. Given a vector space $\mathcal{V}$ over $\mathcal{R}$, let $d : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$ be a function that takes two vectors and computes their ``distance''. This function must satisfy the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$:
 
-\begin{definition}[Inner product space]
-An \defn{inner product space} is a vector space $\mathcal{V}$ over $\mathbb{F}$ endowed with a map $\innerProd{\cdot, \cdot}_\mathcal{V} : \mathcal{V} \times \mathcal{V} \to \mathbb{F}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a \in \mathbb{F}$:
 \begin{description}
-  \item[Linearity] $\innerProd{a \otimes \mathbf{v}, \mathbf{w}}_\mathcal{V} = a \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{V}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}}_\mathcal{V} = \innerProd{\mathbf{u}, \mathbf{w}}_\mathcal{V} + \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{V}$.
-  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{V} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{V} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
-  \item[Conjugate symmetry] $\innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{V} = \innerProd{\mathbf{w}, \mathbf{v}}_\mathcal{V}$.
+  \item[Positive-definiteness] $d(\mathbf{u}, \mathbf{v}) \geq 0$ and $d(\mathbf{u}, \mathbf{v}) = 0 \Leftrightarrow \mathbf{u} = \mathbf{v}$.
+  \item[Symmetry] $d(\mathbf{u}, \mathbf{v}) = d(\mathbf{v}, \mathbf{u})$.
+  \item[Triangular inequality] $d(\mathbf{u}, \mathbf{w}) \leq d(\mathbf{u}, \mathbf{v}) + d(\mathbf{v}, \mathbf{w})$.
 \end{description}
-\end{definition}
 
-For example, we can extend the space $\mathbb{R}^n$ with the dot product to form a inner product space:
+Equipped with this distance function, we now can define a Cauchy sequence. A sequence $\langle x_i \rangle_{i=0}^\infty$ is \defn{Cauchy} if for every real number $\epsilon > 0$ there is a positive integer $N$ such that for all positive integers $m, n \geq N$, $d(x_m, x_n) < \epsilon$. In other words, the members of the sequence get closer and closer to each other in terms of the distance function until they converge to a limit. A space is \defn{complete} if every Cauchy sequence converges to an element in the space. Continuing our example in $(0, 1]$, the sequence $x_i = \frac{1}{n}$ is Cauchy and converges to $0$. However, $0$ is not in that set, so $(0, 1]$ is not complete.
 
-\begin{equation}
-  \innerProd{\mathbf{x}, \mathbf{y}}_{\mathbb{R}^n} \defeq \mathbf{x}^\intercal \mathbf{y} = \sum_{i=1}^n x_i y_i
-\end{equation}
+There are many ways to define the distance $d$ \todo{is this true?}, but there is one particular choice of $d$ that is useful? Soemthing something Banach space.
 
-\todo{mention how inner products can be seen as similarity?}
-
-\section{Norms}
-Another useful operation to have is the ability to find the ``size'' of a vector. We can do this by adding a \defn{norm} to a vector space to form a \defn{normed vector space}.
 \begin{definition}[Norm]
 Given a vector space $\mathcal{V}$ over $\mathbb{R}$, a \defn{norm} on $\mathcal{V}$ is a function $\normLL{\cdot} : \mathcal{V} \to \mathbb{R}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
 \begin{description}
@@ -75,28 +61,33 @@ Given a vector space $\mathcal{V}$ over $\mathbb{R}$, a \defn{norm} on $\mathcal
 \end{description}
 \end{definition}
 
-\todo{Give another example for functions?}
+We can define the distance function as $d(\mathbf{u}, \mathbf{v}) = \normLL{\mathbf{u} - \mathbf{v}}$.
 
-Given an inner product space $\mathcal{V}$ over $\mathbb{R}$ with inner product $\innerProd{\cdot, \cdot}_\mathcal{V} : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$, a natural norm to define for any vector $\mathbf{u} \in \mathcal{V}$ is:
-\begin{equation}
-	\normLL{\mathbf{u}} \defeq \sqrt{\innerProd{\mathbf{u}, \mathbf{u}}_\mathbf{V}} 
-\end{equation}
-
-This is the most common norm for a general inner product space, but other norms can be defined. \todo{Give example?}
-
-An interesting consequence of using this particular norm is that we can express the \defn{distance} between two vectors in terms of this norm.
-
-\begin{definition}[Distance ]
+\begin{definition}[Banach space]
+A Banach space is a normed vector space that is complete with respect to the distance function induced by the norm.
 \end{definition}
-
-\section{Complete Vector Spaces}
 
 \section{Hilbert Spaces}
 
 \begin{definition}[Hilbert space]
-A Hilbert
+A \defn{Hilbert space} \mathcal{H} is a Banach space endowed with a inner product operation $\innerProd{\cdot, \cdot}_\mathcal{H} : \mathcal{H} \times \mathcal{H} \to \mathbb{R}$ satisfying the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{H}$ and $a \in \mathbb{R}$:
+\begin{description}
+  \item[Linearity] $\innerProd{a \mathbf{v}, \mathbf{w}}_\mathcal{H} = a \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{u}, \mathbf{w}}_\mathcal{H} + \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$.
+  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
+  \item[Conjugate symmetry] $\innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{w}, \mathbf{v}}_\mathcal{H}$.
+\end{description}
+
+The norm for the Banach space is given by:
+
+\begin{equation}
+  \normLL{\mathbf{u}, \mathbf{u}}_\mathcal{H} = \sqrt{\innerProd{\mathbf{u}, \mathbf{u}}_\mathcal{H}}
+\end{equation}
+
 \end{definition}
 
+\section{Reproducing Kernel Hilbert Spaces}
+- bounded functional
+- derive kernel trick
 
 \section{Kernels}
 
@@ -179,9 +170,10 @@ We use the feature map $\phi(X)$
 Suppose $k(\cdot, \cdot)$ is a symmetric, positive definite kernel on a set $\mathcal{X}$. Then there is a unique Hilbert space $\mathcal{H}$ of functions on $\mathcal{X}$ for which $k$ is a reproducing kernel.
 \end{theorem}
 
-Let $X$ be a random variable with codomain $\Omega$ and probability distribution $P(X)$. Also let $k$ be a kernel on $\Omega \times \Omega$. From the Moore-Aronszajn Theorem, we know there exists an unique RKHS $\mathcal{H}$ where $k$ is a reproducing kernel. Furthermore, we can define the implicit feature map $\phi(x) \defeq k(x, \cdot)$ from $\Omega$ to $\mathcal{H}$ so that $k(x, x^\prime) = \innerProd{phi(x), phi(x)^\prime}$.
-
 \section{Kernel Embedding of Distributions}
+Now that we have established the RKHS to map to, we need a way to map or embed probability distributions in it.
+
+Let $X$ be a random variable with codomain $\Omega$ and probability distribution $P(X)$. Also let $k$ be a kernel on $\Omega \times \Omega$. From the Moore-Aronszajn Theorem, we know there exists an unique RKHS $\mathcal{H}$ where $k$ is a reproducing kernel. Furthermore, we can define the implicit feature map $\phi(x) \defeq k(x, \cdot)$ from $\Omega$ to $\mathcal{H}$ so that $k(x, x^\prime) = \innerProd{phi(x), phi(x)^\prime}$.
 
 \begin{definition}[Mean embedding]
 The embedding of $P(X)$ in $\mathcal{H}$ via the \defn{mean embedding} is given by
@@ -190,19 +182,19 @@ The embedding of $P(X)$ in $\mathcal{H}$ via the \defn{mean embedding} is given 
 \end{equation}
 \end{definition}
 
-In other words, the mean embedding is the expected value of the feature map of the kernel under the distribution $P(X)$.
+The mean embedding of a probability distribution transforms it to an element in $\mathcal{H}$.
 
 \begin{equation}
-\mu_{X} = \int_\Omega \phi(x) \ \mathrm{d}P(x)
+  \mu_{X} = \int_\Omega \phi(x) \mathrm{d}P(x)
 \end{equation}
 
-In the common case that we don't know the true distribution, we can use Equation to empirically estimate the mean embedding from samples drawn I.I.D. from $P(X)$.
+Since we rarely know the true distribution $P(X)$, we can use empirically estimate the mean embedding from samples drawn I.I.D. from $P(X)$:
 
 \begin{equation}
 \mu_{X} = \frac{1}{n} \sum_{i=1}^n \phi(x_i)
 \end{equation}
 
-The mean embedding has several advantages. Firstly, by the reproducing property of $\mathcal{H}$, the expectation of any function $f \in \mathcal{H}$ can be found by taking its inner product with the kernel embedding:
+This mean embedding has several advantages. Firstly, by the reproducing property of $\mathcal{H}$, the expectation of any function $f \in \mathcal{H}$ can be found by taking its inner product with the kernel embedding:
 
 \begin{equation}
 \E_X[f(X)] = \innerProd{f, \mu_X}_\mathcal{H}
@@ -225,9 +217,9 @@ An important concept t
 \end{equation}
 
 \begin{equation}
-	\widehat{C}_{XY} = \frac{1}{n} \sum_{i=1}^n \phi(x_i) \otimes \phi(y_i)
+  \widehat{C}_{XY} = \frac{1}{n} \sum_{i=1}^n \phi(x_i) \otimes \phi(y_i)
 \end{equation}
 
 \begin{equation}
-	C_{Y \mid X} = C_{YX} C_{XX}^{-1}
+  C_{Y \mid X} = C_{YX} C_{XX}^{-1}
 \end{equation}
