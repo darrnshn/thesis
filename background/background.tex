@@ -1,29 +1,27 @@
 \chapter{Background}
-This chapter introduces the mathematical background for this work. By way of motivating the mathematical theory, suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). One possible approach would be to map elements of $S$ to another set $S^\prime$ and work within $S^\prime$ instead.
+This chapter introduces the mathematical background for this work. By way of motivating the mathematical theory, suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). Instead of working directly with $S$, we could map elements of $S$ to another set $S^\prime$ and work entirely in $S^\prime$. This is advantageous if $S^\prime$ is more convenient to work with than $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
 
-Compared to working directly with $S$, this has the advantage that any properties, theorems, computational savings, and intuition we have for $S^\prime$ become available to us to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
-
-This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a Hilbert space. Mapping to a Hilbert space has several benefits:
+This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a reproducing kernel Hilbert space (RKHS). Mapping to a Hilbert space has several benefits:
 %
 \begin{itemize}
-  \item Hilbert spaces are a generalisation of the Euclidean space, so we can apply our geometric intuition.
+  \item Hilbert spaces are a generalisation of Euclidean space, so we can apply geometrically intuitive notions such as ``size'' and ``distance'' to elements of the space.
   \item They are frequently used in mathematics and physics/powerful.
-  \item Partially due to its intuitive basis on Euclidean space, they blah.
+  \item Partially due to its intuitive basis on Euclidean space, they have a relatively simple structure.
 \end{itemize}
 %
-This chapter begins with the definition of a vector space, which is a useful algebraic structure. We then extend this structure to a Hilbert space by adding additional operations. We then define positive-definite kernels in order to ...
+We begin with vector spaces, which we will subsequently extend to a Hilbert space by adding additional operations. We then introduce the important concept of reproducing kernels\todo{todo}
 
 \section{Vector Spaces}
-We begin with \defn{vector spaces}. A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multiplied by numbers (called \defn{scalars}). More formally,
+A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multiplied by numbers (called \defn{scalars}). More formally,
 
 \begin{definition}[Vector space]
 A \defn{vector space} over a field\footnote{Informally, a field is a set of elements where addition and multiplication of these elements satisfy several axioms such as associativity and closure. An example of a field is the set of real numbers $\mathbb{R}$.} $\mathbb{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathbb{F}$:
 %
 \begin{description}
-  \item[Associativity] $\mathbf{u} \oplus (\mathbf{v} \oplus \mathbf{w}) = (\mathbf{u} \oplus \mathbf{v}) \oplus \mathbf{w}$
-  \item[Commutativity] $\mathbf{u} \oplus \mathbf{v} = \mathbf{v} \oplus \mathbf{w}$ and $a \otimes \mathbf{u} = \mathbf{u} \otimes a$
+  \item[Associativity] $\mathbf{u} \oplus (\mathbf{v} \oplus \mathbf{w}) = (\mathbf{u} \oplus \mathbf{v}) \oplus \mathbf{w}$.
+  \item[Commutativity] $\mathbf{u} \oplus \mathbf{v} = \mathbf{v} \oplus \mathbf{w}$ and $a \otimes \mathbf{u} = \mathbf{u} \otimes a$.
   \item[Existence of Identity] There exists elements $\mathbf{0} \in \mathcal{V}$ and $1 \in \mathbb{F}$ such that $\mathbf{0} \oplus \mathbf{u} = \mathbf{u}$ and $1 \otimes \mathbf{u} = \mathbf{u}$.
-  \item[Existence of Inverse] For every element $\mathbf{u}$, there exists an element $-\mathbf{u} \in \mathcal{V}$ such that $\mathbf{u} \oplus (-\mathbf{u}) = \mathbf{0}$.
+  \item[Existence of Inverse] For every $\mathbf{u}$, there is an element $-\mathbf{u} \in \mathcal{V}$ such that $\mathbf{u} \oplus (-\mathbf{u}) = \mathbf{0}$.
   \item[Distributivity] $a \otimes (\mathbf{u} \oplus \mathbf{v}) = (a \otimes \mathbf{u}) \oplus (a \otimes \mathbf{v})$ and $(a + b) \otimes \mathbf{u} = (a \otimes \mathbf{u}) \oplus (b \cdot \mathbf{v})$
 \end{description}
 \end{definition}
@@ -38,7 +36,7 @@ While the canonical example of a vector space is the space of real n-dimensional
 for $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$.
 
 \section{Banach Spaces}
-One nice property to have in our vector space is the notion of \defn{completeness}. Intuitively, a complete vector space is one with no ``holes'' in it. For example, the interval $(0, 1]$ (i.e. the set of real numbers $0 < x \leq 1$) is not complete since there is a hole at $0$, even though we can get arbitrarily close to $0$ without leaving the space.
+One nice property to have in our vector space is the notion of \defn{completeness}. Intuitively, a complete vector space has no ``holes'' in it. For example, the interval $(0, 1]$ (i.e. the set of real numbers $0 < x \leq 1$) is not complete since $0$ is not in the set, even though the set contains elements arbitrarily close to $0$.
 
 We can capture this intuition formally using Cauchy sequences. Given a vector space $\mathcal{V}$ over $\mathbb{R}$, let $d : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$ be a function that takes two vectors and computes their ``distance''. This function must satisfy the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$:
 %
@@ -48,20 +46,22 @@ We can capture this intuition formally using Cauchy sequences. Given a vector sp
   \item[Triangular inequality] $d(\mathbf{u}, \mathbf{w}) \leq d(\mathbf{u}, \mathbf{v}) + d(\mathbf{v}, \mathbf{w})$.
 \end{description}
 %
-Equipped with this distance function, we can now define a Cauchy sequence. A sequence $\langle x_i \rangle_{i=0}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other in terms of the distance function until they converge to a limit. A space is \defn{complete} if every Cauchy sequence converges to an element in the space. Continuing our example for $(0, 1]$, the sequence $x_i = \frac{1}{i+1}$ is Cauchy and converges to $0$. However, $0$ is not in that set, so $(0, 1]$ is not complete.
+Equipped with this distance function, we can now define a Cauchy sequence. A sequence $\langle x_i \rangle_{i=1}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other in terms of the distance function until they converge to a limit.
+
+A vector space $\mathcal{V}$ is \defn{complete} if every Cauchy sequence of vectors in $\mathcal{V}$ converges to a limit also in $\mathcal{V}$. Continuing our example for $(0, 1]$, the sequence $x_i = 1 / i$ is Cauchy and converges to $0$, which is not in the interval. Therefore $(0, 1]$ is not complete.
 
 There are many ways to define the distance $d$ \todo{is this true?}, but there is one particular choice of $d$ that is useful? Soemthing something Banach space.
 %
-\begin{definition}[Norm]
-Given a vector space $\mathcal{V}$ over $\mathbb{R}$, a \defn{norm} on $\mathcal{V}$ is a function $\normLL{\cdot} : \mathcal{V} \to \mathbb{R}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
+\begin{definition}[Normed vector space]
+A \defn{normed vector space} is a vector space $\mathcal{V}$ over $\mathbb{R}$ equipped with a function $\normLL{\cdot} : \mathcal{V} \to \mathbb{R}$ (called the \defn{norm}) that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
 \begin{description}
-  \item[Non-negativity] $\normLL{\mathbf{v}} \geq 0$ and $\normLL{\mathbf{v}} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
-  \item[Homogeneity] $\normLL{a \mathbf{v}} = \normL{a} \normLL{\mathbf{v}}$.
-  \item[Positive-definiteness] $\normLL{\mathbf{u} + \mathbf{v}} \leq \normLL{\mathbf{u}} + \normLL{\mathbf{v}}$.
+  \item[Positive-definiteness] $\normLL{\mathbf{u}} \geq 0$ and $\normLL{\mathbf{u}} = 0 \Leftrightarrow \mathbf{u} = \mathbf{0}$.
+  \item[Homogeneity] $\normLL{a \mathbf{u}} = \normL{a} \normLL{\mathbf{u}}$.
+  \item[Triangle Inequality] $\normLL{\mathbf{u} + \mathbf{v}} \leq \normLL{\mathbf{u}} + \normLL{\mathbf{v}}$.
 \end{description}
 \end{definition}
 %
-We can define the distance function as $d(\mathbf{u}, \mathbf{v}) \defeq \normLL{\mathbf{u} - \mathbf{v}}$. A vector space with a norm is called a \defn{normed vector space}.
+We can construct the distance function as $d(\mathbf{u}, \mathbf{v}) \defeq \normLL{\mathbf{u} - \mathbf{v}}$. 
 %
 \begin{definition}[Banach space]
 A Banach space is normed vector space that is complete with respect to the distance function induced by the norm.
@@ -75,49 +75,40 @@ A \defn{Hilbert space} $\mathcal{H}$ is a Banach space endowed with a inner prod
 \begin{description}
   \item[Linearity] $\innerProd{a \mathbf{v}, \mathbf{w}}_\mathcal{H} = a \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{u}, \mathbf{w}}_\mathcal{H} + \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$.
   \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
-  \item[Conjugate symmetry] $\innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{w}, \mathbf{v}}_\mathcal{H}$.
+  \item[Ssymmetry] $\innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{w}, \mathbf{v}}_\mathcal{H}$.
 \end{description}
 %
-The norm for the Banach space is given by:
+where the norm for the Banach space is given by:
 %
 \begin{equation}
-  \normLL{\mathbf{u}, \mathbf{u}}_\mathcal{H} = \sqrt{\innerProd{\mathbf{u}, \mathbf{u}}_\mathcal{H}}
+  \normLL{\mathbf{u}}_\mathcal{H} = \sqrt{\innerProd{\mathbf{u}, \mathbf{u}}_\mathcal{H}}
 \end{equation}
 %
 \end{definition}
 
 \section{Reproducing Kernel Hilbert Spaces}
-
-
-%\begin{definition}[Linear functional]
-%Given a vector space $\mathcal{V}$ over a field $\mathbb{F}$, a function $f : \mathcal{V} \to \mathbb{F}$ is a \defn{linear functional} if it satisfies the following conditions for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{F}$:
-%\begin{description}
-%  \item[Additivity] f(\mathbf{u} \oplus \mathbf{v}) = f(\mathbf{u}) + f(\mathbf{v})
-%  \item[Homogeneity of Degree 1] f(a \otimes \mathbf{u}) = a f(\mathbf{u})
-%\end{description}
-%\end{definition}
-
 A linear functional is a linear function from a vector space to its field.
 
 \begin{definition}[Evaluation functional]
-Given a Hilbert space $\mathcal{H}$ over real-valued functions on a set $\mathcal{X}$, the evaluation functional at a point $x \in \mathcal{X}$ is a linear functional $L_x \in \mathcal{H}$ that simply evaluates its argument at $x$:
+Given a Hilbert space $\mathcal{H}$ over real-valued functions on a set $\mathcal{X}$, the evaluation functional at a point $x \in \mathcal{X}$ is a linear functional $L_x \in \mathcal{H}$ that simply evaluates its parameter at $x$:
 \begin{equation}
-  L_x(f) = f(x)
+  L_x[f] \defeq f(x)
 \end{equation}
+\end{definition}
 
 \begin{definition}[Reproducing kernel Hilbert space]
-A Hilbert space \mathcal{H} is a reproducing kernel Hilbert space if, for all $x \in \mathcal{X}$, the evaluation functional $L_x$ is bounded:
+A Hilbert space $\mathcal{H}$ is a RKHS if, for all $x \in \mathcal{X}$, the evaluation functional $L_x$ is \defn{bounded}, i.e. there exists a real number $M > 0$ such that 
 \begin{equation}
-  L_x(f) \leq M \normLL{f}_\mathcal{H} \forall f \in \mathcal{H}
+  L_x[f] \leq M \normLL{f}_\mathcal{H} \quad \forall f \in \mathcal{H}
 \end{equation}
 \end{definition}
 
 This definition, however, is hard to apply in practice, so we leverage 
 
 \begin{theorem}[Riesz representation theorem]
-If \mathcal{H} is a RKHS of real-valued functions on $\mathcal{X}$, then for every $x \in \mathcal{X}$, there is an unique\todo{is it?} function $K_x \in \mathcal{H}$ with the reproducing property,
+If $\mathcal{H}$ is a RKHS of real-valued functions on $\mathcal{X}$, then for every $x \in \mathcal{X}$, there is an unique\todo{is it?} function $K_x \in \mathcal{H}$ with the reproducing property,
 \begin{equation}
-  L_x(f) = \innerProd{K_x, f}_\mathcal{H} \forall f \in \mathcal{H}
+  L_x[f] = \innerProd{K_x, f}_\mathcal{H} \quad \forall f \in \mathcal{H}
 \end{equation}
 \end{theorem}
 
