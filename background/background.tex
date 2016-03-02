@@ -4,13 +4,13 @@ This chapter introduces the mathematical background for this work. By way of mot
 Compared to working directly with $S$, this has the advantage that any properties, theorems, computational savings, and intuition we have for $S^\prime$ become available to us to reason about our original set $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
 
 This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a Hilbert space. Mapping to a Hilbert space has several benefits:
-
+%
 \begin{itemize}
   \item Hilbert spaces are a generalisation of the Euclidean space, so we can apply our geometric intuition.
   \item They are frequently used in mathematics and physics/powerful.
   \item Partially due to its intuitive basis on Euclidean space, they blah.
 \end{itemize}
-
+%
 This chapter begins with the definition of a vector space, which is a useful algebraic structure. We then extend this structure to a Hilbert space by adding additional operations. We then define positive-definite kernels in order to ...
 
 \section{Vector Spaces}
@@ -18,7 +18,7 @@ We begin with \defn{vector spaces}. A vector space, loosely speaking, is a set o
 
 \begin{definition}[Vector space]
 A \defn{vector space} over a field\footnote{Informally, a field is a set of elements where addition and multiplication of these elements satisfy several axioms such as associativity and closure. An example of a field is the set of real numbers $\mathbb{R}$.} $\mathbb{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathbb{F}$:
-
+%
 \begin{description}
   \item[Associativity] $\mathbf{u} \oplus (\mathbf{v} \oplus \mathbf{w}) = (\mathbf{u} \oplus \mathbf{v}) \oplus \mathbf{w}$
   \item[Commutativity] $\mathbf{u} \oplus \mathbf{v} = \mathbf{v} \oplus \mathbf{w}$ and $a \otimes \mathbf{u} = \mathbf{u} \otimes a$
@@ -27,31 +27,31 @@ A \defn{vector space} over a field\footnote{Informally, a field is a set of elem
   \item[Distributivity] $a \otimes (\mathbf{u} \oplus \mathbf{v}) = (a \otimes \mathbf{u}) \oplus (a \otimes \mathbf{v})$ and $(a + b) \otimes \mathbf{u} = (a \otimes \mathbf{u}) \oplus (b \cdot \mathbf{v})$
 \end{description}
 \end{definition}
-
+%
 While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^n$, we can also define vector spaces of other mathematical objects. For instance, $\mathbb{R}^\mathbb{R}$, the set of functions from $\mathbb{R}$ to $\mathbb{R}$, is a vector space. In this space, vector addition and scalar multiplication can be defined as:
-
+%
 \begin{align}
   (f \oplus g)(x) &\defeq f(x) g(x) \\
   (a \otimes f)(x) &\defeq a f(x)
 \end{align}
-
+%
 for $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$.
 
 \section{Banach Spaces}
 One nice property to have in our vector space is the notion of \defn{completeness}. Intuitively, a complete vector space is one with no ``holes'' in it. For example, the interval $(0, 1]$ (i.e. the set of real numbers $0 < x \leq 1$) is not complete since there is a hole at $0$, even though we can get arbitrarily close to $0$ without leaving the space.
 
-We now capture this intuition formally using Cauchy sequences. Given a vector space $\mathcal{V}$ over $\mathcal{R}$, let $d : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$ be a function that takes two vectors and computes their ``distance''. This function must satisfy the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$:
-
+We can capture this intuition formally using Cauchy sequences. Given a vector space $\mathcal{V}$ over $\mathbb{R}$, let $d : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$ be a function that takes two vectors and computes their ``distance''. This function must satisfy the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$:
+%
 \begin{description}
   \item[Positive-definiteness] $d(\mathbf{u}, \mathbf{v}) \geq 0$ and $d(\mathbf{u}, \mathbf{v}) = 0 \Leftrightarrow \mathbf{u} = \mathbf{v}$.
   \item[Symmetry] $d(\mathbf{u}, \mathbf{v}) = d(\mathbf{v}, \mathbf{u})$.
   \item[Triangular inequality] $d(\mathbf{u}, \mathbf{w}) \leq d(\mathbf{u}, \mathbf{v}) + d(\mathbf{v}, \mathbf{w})$.
 \end{description}
-
-Equipped with this distance function, we now can define a Cauchy sequence. A sequence $\langle x_i \rangle_{i=0}^\infty$ is \defn{Cauchy} if for every real number $\epsilon > 0$ there is a positive integer $N$ such that for all positive integers $m, n \geq N$, $d(x_m, x_n) < \epsilon$. In other words, the members of the sequence get closer and closer to each other in terms of the distance function until they converge to a limit. A space is \defn{complete} if every Cauchy sequence converges to an element in the space. Continuing our example in $(0, 1]$, the sequence $x_i = \frac{1}{n}$ is Cauchy and converges to $0$. However, $0$ is not in that set, so $(0, 1]$ is not complete.
+%
+Equipped with this distance function, we can now define a Cauchy sequence. A sequence $\langle x_i \rangle_{i=0}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other in terms of the distance function until they converge to a limit. A space is \defn{complete} if every Cauchy sequence converges to an element in the space. Continuing our example for $(0, 1]$, the sequence $x_i = \frac{1}{i+1}$ is Cauchy and converges to $0$. However, $0$ is not in that set, so $(0, 1]$ is not complete.
 
 There are many ways to define the distance $d$ \todo{is this true?}, but there is one particular choice of $d$ that is useful? Soemthing something Banach space.
-
+%
 \begin{definition}[Norm]
 Given a vector space $\mathcal{V}$ over $\mathbb{R}$, a \defn{norm} on $\mathcal{V}$ is a function $\normLL{\cdot} : \mathcal{V} \to \mathbb{R}$ that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
 \begin{description}
@@ -60,29 +60,30 @@ Given a vector space $\mathcal{V}$ over $\mathbb{R}$, a \defn{norm} on $\mathcal
   \item[Positive-definiteness] $\normLL{\mathbf{u} + \mathbf{v}} \leq \normLL{\mathbf{u}} + \normLL{\mathbf{v}}$.
 \end{description}
 \end{definition}
-
-We can define the distance function as $d(\mathbf{u}, \mathbf{v}) = \normLL{\mathbf{u} - \mathbf{v}}$.
-
+%
+We can define the distance function as $d(\mathbf{u}, \mathbf{v}) \defeq \normLL{\mathbf{u} - \mathbf{v}}$. A vector space with a norm is called a \defn{normed vector space}.
+%
 \begin{definition}[Banach space]
-A Banach space is a normed vector space that is complete with respect to the distance function induced by the norm.
+A Banach space is normed vector space that is complete with respect to the distance function induced by the norm.
 \end{definition}
 
 \section{Hilbert Spaces}
 
 \begin{definition}[Hilbert space]
-A \defn{Hilbert space} \mathcal{H} is a Banach space endowed with a inner product operation $\innerProd{\cdot, \cdot}_\mathcal{H} : \mathcal{H} \times \mathcal{H} \to \mathbb{R}$ satisfying the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{H}$ and $a \in \mathbb{R}$:
+A \defn{Hilbert space} $\mathcal{H}$ is a Banach space endowed with a inner product operation $\innerProd{\cdot, \cdot}_\mathcal{H} : \mathcal{H} \times \mathcal{H} \to \mathbb{R}$ satisfying the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{H}$ and $a \in \mathbb{R}$:
+%
 \begin{description}
   \item[Linearity] $\innerProd{a \mathbf{v}, \mathbf{w}}_\mathcal{H} = a \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{u}, \mathbf{w}}_\mathcal{H} + \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$.
   \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
   \item[Conjugate symmetry] $\innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{w}, \mathbf{v}}_\mathcal{H}$.
 \end{description}
-
+%
 The norm for the Banach space is given by:
-
+%
 \begin{equation}
   \normLL{\mathbf{u}, \mathbf{u}}_\mathcal{H} = \sqrt{\innerProd{\mathbf{u}, \mathbf{u}}_\mathcal{H}}
 \end{equation}
-
+%
 \end{definition}
 
 \section{Reproducing Kernel Hilbert Spaces}
