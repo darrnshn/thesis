@@ -1,5 +1,5 @@
 \chapter{Background}
-This chapter motivates the mathematical background for this work. \todo{point about mapping to a space to solve the problem more easily.} Suppose we are working with an abstract set $\mathcal{S}$ (e.g. a set of probability distributions). Instead of working with $\mathcal{S}$ directly, we could map elements of $\mathcal{S}$ to another set $\mathcal{S}^\prime$ and work entirely in $mathcal{S}^\prime$. If the new set is easier to work with, then this approach could be better than working with the original set. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
+This chapter motivates the mathematical background for this work. \todo{point about mapping to a space to solve the problem more easily.} Suppose we are working with an abstract set $\mathcal{S}$ (e.g. a set of probability distributions). Instead of working with $\mathcal{S}$ directly, we could map elements of $\mathcal{S}$ to another set $\mathcal{S}^\prime$ and work entirely in $\mathcal{S}^\prime$. If the new set is easier to work with, then this approach could be better than working with the original set. All we need is an ``embedding'' to transform elements of $S$ to $S^\prime$.
 
 Our \todo{approach?} is \todo{inspired?} by this technique. Instead of working with probability distributions directly, we embed them in a reproducing kernel Hilbert space (RKHS). Mapping to a Hilbert space has several benefits:
 %
@@ -46,7 +46,7 @@ We can capture this intuition about completeness formally. Given a vector space 
   \item[Triangular inequality] $d(\mathbf{u}, \mathbf{w}) \leq d(\mathbf{u}, \mathbf{v}) + d(\mathbf{v}, \mathbf{w})$.
 \end{description}
 %
-Given a distance function $d$, a sequence $\langle x_i \rangle_{i=1}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other in terms of the distance function until they converge to a limit.
+Given a distance function $d$, a sequence $\langle x_i \rangle_{i=1}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, we have $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other with respect to $d$ until they converge to a limit.
 
 A vector space $\mathcal{V}$ is \defn{complete} if every Cauchy sequence of vectors in $\mathcal{V}$ converges to a limit also in $\mathcal{V}$. Continuing our example for $(0, 1]$, the sequence $x_i = 1 / i$ is Cauchy and converges to $0$, which is not in the interval. Therefore $(0, 1]$ is not complete.
 
