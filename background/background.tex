@@ -1,15 +1,15 @@
 \chapter{Background}
-This chapter introduces the mathematical background for this work. By way of motivating the mathematical theory, suppose we are working with some abstract set $\mathcal{S}$ (for instance, a set of probability distributions). Instead of working directly with $S$, we could map elements of $S$ to another set $S^\prime$ and work entirely in $S^\prime$. This is advantageous if $S^\prime$ is more convenient to work with than $S$. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
+This chapter motivates the mathematical background for this work. \todo{point about mapping to a space to solve the problem more easily.} Suppose we are working with an abstract set $\mathcal{S}$ (e.g. a set of probability distributions). Instead of working with $\mathcal{S}$ directly, we could map elements of $\mathcal{S}$ to another set $\mathcal{S}^\prime$ and work entirely in $mathcal{S}^\prime$. If the new set is easier to work with, then this approach could be better than working with the original set. All we need is an ``embedding'' or a ``representation theorem'' to transform elements of $S$ to $S^\prime$.
 
-This approach underpins the theory in this thesis. Instead of directly working with probability distributions, we embed them in a reproducing kernel Hilbert space (RKHS). Mapping to a Hilbert space has several benefits:
+Our \todo{approach?} is \todo{inspired?} by this technique. Instead of working with probability distributions directly, we embed them in a reproducing kernel Hilbert space (RKHS). Mapping to a Hilbert space has several benefits:
 %
 \begin{itemize}
-  \item Hilbert spaces are a generalisation of Euclidean space, so we can apply geometrically intuitive notions such as ``size'' and ``distance'' to elements of the space.
-  \item They are frequently used in mathematics and physics/powerful.
-  \item Partially due to its intuitive basis on Euclidean space, they have a relatively simple structure.
+  \item Hilbert spaces generalise Euclidean space, so we can apply our geometric intuition to elements of the space.
+  \item \todo{They are frequently used in mathematics and physics/powerful?}
+  \item \todo{They have a relatively simple structure?}
 \end{itemize}
 %
-We begin with vector spaces, which we will subsequently extend to a Hilbert space by adding additional operations. We then introduce the important concept of reproducing kernels\todo{todo}
+We begin with vector spaces, which are algebraic structures that we subsequently extend with additional operations to form a Hilbert space. We then introduce the important concept of reproducing kernels\todo{todo}
 
 \section{Vector Spaces}
 A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multiplied by numbers (called \defn{scalars}). More formally,
@@ -33,12 +33,12 @@ While the canonical example of a vector space is the space of real n-dimensional
   (a \otimes f)(x) &\defeq a f(x)
 \end{align}
 %
-for $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$.
+for $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$. \todo{what goes here?}
 
 \section{Banach Spaces}
 One nice property to have in our vector space is the notion of \defn{completeness}. Intuitively, a complete vector space has no ``holes'' in it. For example, the interval $(0, 1]$ (i.e. the set of real numbers $0 < x \leq 1$) is not complete since $0$ is not in the set, even though the set contains elements arbitrarily close to $0$.
 
-We can capture this intuition formally using Cauchy sequences. Given a vector space $\mathcal{V}$ over $\mathbb{R}$, let $d : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$ be a function that takes two vectors and computes their ``distance''. This function must satisfy the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$:
+We can capture this intuition about completeness formally. Given a vector space $\mathcal{V}$ over $\mathbb{R}$, let $d : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$ be a \defn{distance function} that satisfies the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$:
 %
 \begin{description}
   \item[Positive-definiteness] $d(\mathbf{u}, \mathbf{v}) \geq 0$ and $d(\mathbf{u}, \mathbf{v}) = 0 \Leftrightarrow \mathbf{u} = \mathbf{v}$.
@@ -46,25 +46,23 @@ We can capture this intuition formally using Cauchy sequences. Given a vector sp
   \item[Triangular inequality] $d(\mathbf{u}, \mathbf{w}) \leq d(\mathbf{u}, \mathbf{v}) + d(\mathbf{v}, \mathbf{w})$.
 \end{description}
 %
-Equipped with this distance function, we can now define a Cauchy sequence. A sequence $\langle x_i \rangle_{i=1}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other in terms of the distance function until they converge to a limit.
+Given a distance function $d$, a sequence $\langle x_i \rangle_{i=1}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other in terms of the distance function until they converge to a limit.
 
 A vector space $\mathcal{V}$ is \defn{complete} if every Cauchy sequence of vectors in $\mathcal{V}$ converges to a limit also in $\mathcal{V}$. Continuing our example for $(0, 1]$, the sequence $x_i = 1 / i$ is Cauchy and converges to $0$, which is not in the interval. Therefore $(0, 1]$ is not complete.
 
 There are many ways to define the distance $d$ \todo{is this true?}, but there is one particular choice of $d$ that is useful? Soemthing something Banach space.
 %
-\begin{definition}[Normed vector space]
-A \defn{normed vector space} is a vector space $\mathcal{V}$ over $\mathbb{R}$ equipped with a function $\normLL{\cdot} : \mathcal{V} \to \mathbb{R}$ (called the \defn{norm}) that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
+\begin{definition}[Banach space]
+A Banach space is vector space that is complete with respect to the distance function:
+\begin{equation}
+  d(\mathbf{u}, \mathbf{v}) = \normLL{\mathbf{u} - \mathbf{v}}
+\end{equation}
+where $\normLL{\cdot}$ is a function from $\mathcal{V}$ to $\mathbb{R}$ (called the \defn{norm}) that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
 \begin{description}
   \item[Positive-definiteness] $\normLL{\mathbf{u}} \geq 0$ and $\normLL{\mathbf{u}} = 0 \Leftrightarrow \mathbf{u} = \mathbf{0}$.
   \item[Homogeneity] $\normLL{a \mathbf{u}} = \normL{a} \normLL{\mathbf{u}}$.
   \item[Triangle Inequality] $\normLL{\mathbf{u} + \mathbf{v}} \leq \normLL{\mathbf{u}} + \normLL{\mathbf{v}}$.
 \end{description}
-\end{definition}
-%
-We can construct the distance function as $d(\mathbf{u}, \mathbf{v}) \defeq \normLL{\mathbf{u} - \mathbf{v}}$. 
-%
-\begin{definition}[Banach space]
-A Banach space is normed vector space that is complete with respect to the distance function induced by the norm.
 \end{definition}
 
 \section{Hilbert Spaces}
