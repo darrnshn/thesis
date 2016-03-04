@@ -87,7 +87,7 @@ where the norm for the Banach space is given by:
 \section{Reproducing Kernel Hilbert Spaces}
 
 \subsection{Reproducing Kernels}
-A \defn{linear functional} is a linear function from a vector space to its field.
+
 
 \begin{definition}[Evaluation functional]
 Given a Hilbert space $\mathcal{H}$ over real-valued functions on a set $\mathcal{X}$, the evaluation functional at a point $x \in \mathcal{X}$ is a linear functional $L_x \in \mathcal{H}$ that simply evaluates its parameter at $x$:
@@ -116,27 +116,37 @@ Let $K_y$ be any function in $\mathcal{H}$. By the reproducing property, $K_y(x)
 
 
 \section{Positive Definite Kernels}
+- Reproducing kernels are positive definite
 
-- positive definiteness
+\begin{definition}[Positive semi-definite matrix]
+A real symmetric $n \times n$ matrix $K$ satisfying
+\begin{equation}
+	\sum_{i, j=1}^n c_i c_j K_{ij} \geq 0
+\end{equation}
+for all $c_i, c_j \in \mathbb{R}$ is called \defn{positive semi-definite}. If the term on the left is strictly positive, then $K$ is called \defn{positive definite}.
+\end{definition}
 
 \subsection{RKHS from kernels}
 There is a theorem that shows the converse:
 
 \begin{theorem}[Moore-Aronszajn theorem]
-Given a symmetric, positive definite kernel $K(\cdot, \cdot) : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$, there exists a unique RKHS $\mathcal{H}$ of functions on $\mathcal{X}$ for which $K$ is the reproducing kernel.
+Given a kernel $K(\cdot, \cdot) : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$, there exists a unique RKHS $\mathcal{H}$ of functions on $\mathcal{X}$ for which $K$ is the reproducing kernel.
 \end{theorem}
+%
+\begin{proof}
+For all $x \in \mathcal{X}$, let $K_x : \mathcal{X} \to \mathbb{R}$ be the function such that $K_x(y) = K(x, y)$. The set of all linear combinations of these functions forms a vector space $\mathcal{H}$.
 
-\todo{proof?}
+To turn $\mathcal{H}$ into a Hilbert space, we first define 
+\end{proof}
 
 \subsection{Feature maps}
 
-Let $\phi(\mathbf{x}) \defeq K(\mathbf{x}, \cdot)$
 \begin{align}
-  K(\mathbf{x}, \mathbf{x}^\prime) &= \innerProd{K(\mathbf{x}, \cdot), K(\mathbf{x}^\prime, \cdot)}_\mathcal{H}
-                                   &= \innerProd{\phi(\mathbf{x}), \phi(\mathbf{x}^\prime)}_\mathcal{H}
+  K(\mathbf{x}, \mathbf{x}^\prime) &= \innerProd{K(\mathbf{x}, \cdot), K(\mathbf{x}^\prime, \cdot)}_\mathcal{H} \\
+                                   &\vcentcolon= \innerProd{\phi(\mathbf{x}), \phi(\mathbf{x}^\prime)}_\mathcal{H}
 \end{align}
 
-The function $\phi$ can be thought of as an implicit \defn{feature map} from the input space $\mathcal{X}$ to an inner product space $\mathcal{V}$ called the \defn{feature space}. So evaluating a kernel can be thought as way of computing the inner product in a Hilbert space without explicitly mapping between input space and feature space. This technique is known as the \defn{kernel trick}, which is commonly used in non-linear support vector machines.
+We can view the function $\phi$ as an implicit \defn{feature map} from the input space $\mathcal{X}$ to an inner product space $\mathcal{V}$ called the \defn{feature space}. So evaluating a kernel is equivalent to computing the inner product in a Hilbert space without explicitly mapping between input space and feature space. This technique is known as the \defn{kernel trick}.
 
 Picking a kernel is picking a hilbert space.
 
@@ -148,13 +158,6 @@ Given a kernel $k : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ and observati
 for $1 \leq i, j \leq n$ is called the \defn{Gram matrix} of $k$ with respect to $\mathbf{x}_1, \dotsc, \mathbf{x}_n$.
 \end{definition}
 
-\begin{definition}[Positive semi-definite matrix]
-A real symmetric $n \times n$ matrix $K$ satisfying
-\begin{equation}
-	\sum_{i, j=1}^n c_i c_j K_{ij} \geq 0
-\end{equation}
-for all $c_i, c_j \in \mathbb{R}$ is called \defn{positive semi-definite}. If the term on the left is strictly positive, then $K$ is called \defn{positive definite}.
-\end{definition}
 
 \begin{definition}[Positive definite kernel]
 Let $\mathcal{X}$ be a non-empty set. A symmetric function $k : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ is called a \defn{positive definite kernel} (or simply a \defn{kernel}) if the Gram matrix of $k$ with respect to all finite sized observations $\{ \mathbf{x}_1, \dotsc, \mathbf{x}_n \} \in \mathcal{X}$ ($n \in \mathbb{N}$) is positive semi-definite.
