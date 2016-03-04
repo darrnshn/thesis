@@ -85,7 +85,9 @@ where the norm for the Banach space is given by:
 \end{definition}
 
 \section{Reproducing Kernel Hilbert Spaces}
-A linear functional is a linear function from a vector space to its field.
+
+\subsection{Reproducing Kernels}
+A \defn{linear functional} is a linear function from a vector space to its field.
 
 \begin{definition}[Evaluation functional]
 Given a Hilbert space $\mathcal{H}$ over real-valued functions on a set $\mathcal{X}$, the evaluation functional at a point $x \in \mathcal{X}$ is a linear functional $L_x \in \mathcal{H}$ that simply evaluates its parameter at $x$:
@@ -106,18 +108,42 @@ This definition, however, is hard to apply in practice, so we leverage
 \begin{theorem}[Riesz representation theorem]
 If $\mathcal{H}$ is a RKHS of real-valued functions on $\mathcal{X}$, then for every $x \in \mathcal{X}$, there is an unique\todo{is it?} function $K_x \in \mathcal{H}$ with the reproducing property,
 \begin{equation}
-  L_x[f] = \innerProd{K_x, f}_\mathcal{H} \quad \forall f \in \mathcal{H}
+  L_x[f] = f(x) = \innerProd{f, K_x}_\mathcal{H} \quad \forall f \in \mathcal{H}
 \end{equation}
 \end{theorem}
 
-We can then define the \defn{reproducing kernel} of $\mathcal{H}$ as $K(x, x^\prime) \defeq K_x(x^\prime) = \innerProd{K_x, K_{x^\prime}}_\mathcal{H}$.
+Let $K_y$ be any function in $\mathcal{H}$. By the reproducing property, $K_y(x) = \innerProd{K_y, K_x}_\mathcal{H}$ for every $x \in \mathcal{H}$. We can then define the \defn{reproducing kernel} of $\mathcal{H}$ as $K(x, y) \defeq K_x(y) = \innerProd{K_x, K_y}_\mathcal{H}$.
 
-\section{Kernels}
+
+\section{Positive Definite Kernels}
+
+- positive definiteness
+
+\subsection{RKHS from kernels}
+There is a theorem that shows the converse:
+
+\begin{theorem}[Moore-Aronszajn theorem]
+Given a symmetric, positive definite kernel $K(\cdot, \cdot) : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$, there exists a unique RKHS $\mathcal{H}$ of functions on $\mathcal{X}$ for which $K$ is the reproducing kernel.
+\end{theorem}
+
+\todo{proof?}
+
+\subsection{Feature maps}
+
+Let $\phi(\mathbf{x}) \defeq K(\mathbf{x}, \cdot)$
+\begin{align}
+  K(\mathbf{x}, \mathbf{x}^\prime) &= \innerProd{K(\mathbf{x}, \cdot), K(\mathbf{x}^\prime, \cdot)}_\mathcal{H}
+                                   &= \innerProd{\phi(\mathbf{x}), \phi(\mathbf{x}^\prime)}_\mathcal{H}
+\end{align}
+
+The function $\phi$ can be thought of as an implicit \defn{feature map} from the input space $\mathcal{X}$ to an inner product space $\mathcal{V}$ called the \defn{feature space}. So evaluating a kernel can be thought as way of computing the inner product in a Hilbert space without explicitly mapping between input space and feature space. This technique is known as the \defn{kernel trick}, which is commonly used in non-linear support vector machines.
+
+Picking a kernel is picking a hilbert space.
 
 \begin{definition}[Gram matrix]
 Given a kernel $k : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ and observations $\{ \mathbf{x}_1, \dotsc, \mathbf{x}_n \} \in \mathcal{X}$, the $n \times n$ real matrix $K$ with elements
 \begin{equation}
-	K_{ij} \defeq k(\mathbf{x}_i, \mathbf{x}_j)
+  K_{ij} \defeq k(\mathbf{x}_i, \mathbf{x}_j)
 \end{equation}
 for $1 \leq i, j \leq n$ is called the \defn{Gram matrix} of $k$ with respect to $\mathbf{x}_1, \dotsc, \mathbf{x}_n$.
 \end{definition}
@@ -142,7 +168,6 @@ If $k$ is a kernel on $\mathcal{X} \times \mathcal{X}$, then it can be written i
 for some inner product space $\mathcal{V}$.
 \end{theorem}
 
-The function $\phi : \mathcal{X} \to \mathcal{V}$ is an implicit \defn{feature map} from the input space $\mathcal{X}$ to an inner product space $\mathcal{V}$ called the \defn{feature space}. Mercer's theorem shows that kernels can be thought as way of computing the inner product in some feature space without explicitly mapping between input space and feature space. This technique is known as the \defn{kernel trick}, which is commonly used in non-linear support vector machines.
 
 This is significant. Since , kernels 
 
@@ -188,10 +213,6 @@ Using the reproducing property of $\mathcal{H}$, we can express the inner produc
 We use the feature map $\phi(X)$
 
 
-
-\begin{theorem}[Moore-Aronszajn theorem]
-Suppose $k(\cdot, \cdot)$ is a symmetric, positive definite kernel on a set $\mathcal{X}$. Then there is a unique Hilbert space $\mathcal{H}$ of functions on $\mathcal{X}$ for which $k$ is a reproducing kernel.
-\end{theorem}
 
 \section{Kernel Embedding of Distributions}
 Now that we have established the RKHS to map to, we need a way to map or embed probability distributions in it.
