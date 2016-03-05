@@ -142,11 +142,14 @@ Since $\mathcal{H}_0$ may not be complete, we complete $\mathcal{H}_0$ to form a
 
 We can now show the reproducing property:
 %
-\begin{equation}
-	\innerProd{f, K_x} = \innerProd{\sum_{}
-\end{equation}
+\begin{align}
+  \innerProd{f, K(x, \cdot)} &= \innerProd{\sum_{y \in \mathcal{X}} b_i K(y, \cdot), K(x, \cdot)}
+                             &= \sum_{y \in \mathcal{X}} \innerProd{K(y, \cdot), K(x, \cdot)}
+                             &= \sum_{y \in \mathcal{X}} K(y, x)
+                             &= f(x)
+\end{align}
 %
-
+Hence $K(x, \cdot)$ is the representer of $x$.
 \end{proof}
 
 From this, we can see that when we choose a kernel, we also implicitly choose a corresponding RKHS.
