@@ -1,15 +1,15 @@
 \chapter{Background}
-This chapter motivates the mathematical background for this work. \todo{point about mapping to a space to solve the problem more easily.} Suppose we are working with an abstract set $\mathcal{S}$ (e.g. a set of probability distributions). Instead of working with $\mathcal{S}$ directly, we could map elements of $\mathcal{S}$ to another set $\mathcal{S}^\prime$ and work entirely in $\mathcal{S}^\prime$. If the new set is easier to work with, then this approach could be better than working with the original set. All we need is an ``embedding'' to transform elements of $S$ to $S^\prime$.
+This chapter introduces the mathematical background behind this work. The mathematical theory is motivated by the technique of solving a problem by transforming it into another. Suppose we are working with an abstract set $\mathcal{S}$ (e.g. a set of probability distributions). Instead of working with $\mathcal{S}$ directly, we could map elements of $\mathcal{S}$ to another set $\mathcal{S}^\prime$ and work entirely in $\mathcal{S}^\prime$. If the new set is easier to work with, then this approach could be better than working with the original set. All we need is an ``embedding'' to transform elements of $S$ to $S^\prime$.
 
-The \todo{approach?} is \todo{inspired?} by this technique. Instead of working with probability distributions directly, we embed them in a reproducing kernel Hilbert space (RKHS). Mapping to a Hilbert space has several benefits:
+The \todo{approach?} is \todo{inspired?} by this technique. Instead of working with probability distributions directly, we embed them in a reproducing kernel Hilbert space (RKHS) and work entirely in the Hilbert space instead. Using a Hilbert space has several benefits:
 %
 \begin{itemize}
   \item Hilbert spaces generalise Euclidean space, so we can apply our geometric intuition to elements of the space.
-  \item \todo{They are frequently used in mathematics and physics/powerful?}
-  \item \todo{They have a relatively simple structure?}
+  \item They have been successfully used in this way for partial differential equations, quantum mechanics, and many other areas \needcite.
+  \item They have a relatively simple structure compared to other topological vector spaces \needcite.
 \end{itemize}
 %
-We begin with vector spaces, which are algebraic structures that we subsequently extend with additional operations to form a Hilbert space. We then introduce the important concept of reproducing kernels\todo{todo}
+Our discussion begins with vector spaces, which are algebraic structures that we can extend to a Hilbert space. \todo{We then introduce reproducing kernel Hilbert spaces and positive-definite kernels. Finally, we show how probability distributions can be embedded in a RKHS.}
 
 \section{Vector Spaces}
 A vector space, loosely speaking, is a set of objects (called \defn{vectors}) that can be added together and multiplied by numbers (called \defn{scalars}). More formally,
@@ -33,7 +33,7 @@ While the canonical example of a vector space is the space of real n-dimensional
   (a \otimes f)(x) &\defeq a f(x)
 \end{align}
 %
-for $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$. \todo{what goes here?}
+for any $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$.
 
 \section{Banach Spaces}
 One nice property to have in our vector space is the notion of \defn{completeness}. Intuitively, a complete vector space has no ``holes'' in it. For example, the interval $(0, 1]$ (i.e. the set of real numbers $0 < x \leq 1$) is not complete since $0$ is not in the set, even though the set contains elements arbitrarily close to $0$.
@@ -50,10 +50,10 @@ Given a distance function $d$, a sequence $\langle x_i \rangle_{i=1}^\infty$ is 
 
 A vector space $\mathcal{V}$ is \defn{complete} if every Cauchy sequence of vectors in $\mathcal{V}$ converges to a limit also in $\mathcal{V}$. Continuing our example for $(0, 1]$, the sequence $x_i = 1 / i$ is Cauchy and converges to $0$, which is not in the interval. Therefore $(0, 1]$ is not complete.
 
-There are many ways to define the distance $d$ \todo{is this true?}, but there is one particular choice of $d$ that is useful? Soemthing something Banach space.
+We can now extend a vector space with this notion of completeness:
 %
 \begin{definition}[Banach space]
-A Banach space is vector space that is complete with respect to the distance function:
+A \defn{Banach} space is vector space that is complete with respect to the distance function:
 \begin{equation}
   d(\mathbf{u}, \mathbf{v}) = \normLL{\mathbf{u} - \mathbf{v}}
 \end{equation}
@@ -65,10 +65,12 @@ where $\normLL{\cdot}$ is a function from $\mathcal{V}$ to $\mathbb{R}$ (called 
 \end{description}
 \end{definition}
 
+An example of a Banach space is $\mathbb{R}^n$. There are actually an infinite number of norms that can be defined on $\mathbb{R}^n$, with the most common being the L2 norm $\normLL{\mathbf{u}}_2 \defeq \sqrt{\sum_{i=1}^n u_i}$ for a vector $\mathbf{u} \in \mathcal{H}$. 
+
 \section{Hilbert Spaces}
 
 \begin{definition}[Hilbert space]
-A \defn{Hilbert space} $\mathcal{H}$ is a Banach space endowed with a inner product operation $\innerProd{\cdot, \cdot}_\mathcal{H} : \mathcal{H} \times \mathcal{H} \to \mathbb{R}$ satisfying the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{H}$ and $a \in \mathbb{R}$:
+A \defn{Hilbert space} $\mathcal{H}$ over $\mathbb{F}$ is a Banach space endowed with a inner product operation $\innerProd{\cdot, \cdot}_\mathcal{H} : \mathcal{H} \times \mathcal{H} \to \mathbb{F}$ satisfying the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{H}$ and $a \in \mathbb{F}$:
 %
 \begin{description}
   \item[Linearity] $\innerProd{a \mathbf{v}, \mathbf{w}}_\mathcal{H} = a \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{u}, \mathbf{w}}_\mathcal{H} + \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$.
@@ -84,41 +86,47 @@ where the norm for the Banach space is given by:
 %
 \end{definition}
 
-\section{Reproducing Kernel Hilbert Spaces}
-We define a RKHS to be a Hilbert space of functions whose elements satisfy a useful property\footnote{A more standard and formal definition is to use bounded linear functionals, but our definition does not require familarity with functional analysis. See \todo{ref}}:
+As we mentioned in the start of this chapter, Hilbert spaces are a generalisation of Euclidean space, so it should not be surprising that $\mathbb{R}^n$ is a Hilbert space, with the inner product given by $\innerProd{\mathbf{u}, \mathbf{v}}_\mathcal{H} \defeq \sum_{i=0}^n u_i v_i$ for vectors $\mathbf{u}, \mathbf{v} \in \mathcal{H}$.
 
+\section{Reproducing Kernel Hilbert Spaces}
+We define a reproducing kernel Hilbert space (RKHS) to be a Hilbert space of functions whose elements satisfy a useful property\footnote{A more standard and formal definition is to use bounded linear functionals, but our definition does not require familarity with functional analysis. \needcite}:
+%
 \begin{definition}[Reproducing Kernel Hilbert Space]
-A Hilbert space $\mathcal{H}$ of real-valued functions on $\mathcal{X}$ is a \defn{reproducing kernel Hilbert space (RKHS)} if, for every $x \in \mathcal{X}$, there is unique\todo{is it?} function $K_x \in \mathcal{H}$ (called the \defn{representer} of $x$) with the reproducing property,
+A Hilbert space $\mathcal{H}$ of real-valued functions on $\mathcal{X}$ is a \defn{reproducing kernel Hilbert space (RKHS)} if, for every $x \in \mathcal{X}$, there is unique function $K_x \in \mathcal{H}$ (called the \defn{representer} of $x$) with the reproducing property,
 \begin{equation}
   f(x) = \innerProd{f, K_x}_\mathcal{H} \quad \forall f \in \mathcal{H}
 \end{equation}
 \end{definition}
 
-So in a RKHS, evaluating a function $f \in \mathcal{H}$ at a point $x \in \mathcal{X}$ is equivalent to taking the inner product of $f$ with the representer of $x$ by the reproducing property of $f$. Using this property, we can then define the \defn{reproducing kernel} of $\mathcal{H}$ as $K(x, y) \defeq K_x(y) = \innerProd{K_x, K_y}_\mathcal{H}$.
+So in a RKHS $\mathcal{H}$, evaluating a function $f \in \mathcal{H}$ at a point $x \in \mathcal{X}$ is equivalent to taking the inner product of $f$ with the representer of $x$. Using this reproducing property, we can then define the \defn{reproducing kernel} of $\mathcal{H}$ as $K(x, y) \defeq K_x(y) = \innerProd{K_x, K_y}_\mathcal{H}$.
 
 \section{Positive Definite Kernels}
-- Reproducing kernels are positive definite
-
-\begin{definition}[Positive semi-definite matrix]
-A real symmetric $n \times n$ matrix $K$ satisfying
+The reproducing kernels in the previous section belong to a special class of functions called \defn{positive definite kernels}:
+%
+\begin{definition}
+Let $\mathcal{X}$ be a nonempty set. A symmetric function $K : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ is called a \defn{positive definite kernel} (or just a \defn{kernel}) on $\mathcal{X}$ if it satisfies:
 \begin{equation}
-	\sum_{i, j=1}^n c_i c_j K_{ij} \geq 0
+	\sum_{i,j=1}^n c_i c_j K(x_i, x_j) \geq 0
 \end{equation}
-for all $c_i, c_j \in \mathbb{R}$ is called \defn{positive semi-definite}. If the term on the left is strictly positive, then $K$ is called \defn{positive definite}.
+for any $n \in \mathbb{N}$, $x_1, \dots, x_n \in \mathcal{X}$, and $c_1, \dots, c_n \in \mathbb{R}$.
 \end{definition}
+%
+Since $\sum_{i,j=1}^n c_i c_j K(x, x^\prime) = \innerProd{\sum_{i=1}^n c_i K_x, \sum_{j=1}^n c_j K_{x^\prime}} \geq 0$ by the reproducing property, we can see that all reproducing kernels are positive definite kernels.
 
-\subsection{RKHS From Kernels}
-We've shown that every RKHS has a reproducing kernel, but the converse is also true:
+There are many examples of positive definite kernels, such as linear kernels, polynomial kernels, and Gaussian kernels \todo{give explicit formulas}?.
+
+\subsection{Constructing RKHSs}
+\todo{For any of this to be useful, we need to specify what sort of RKHS we are mapping to. However, as we will see later, specifying a RKHS from scratch is a lot of work. Fortunately, there is a remarkable theorem that makes this easier}:
 
 \begin{theorem}[Moore-Aronszajn theorem]
 Given a kernel $K(\cdot, \cdot) : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$, there exists a unique RKHS $\mathcal{H}$ of functions on $\mathcal{X}$ for which $K$ is the reproducing kernel.
 \end{theorem}
 %
 \begin{proof}
-For all $x \in \mathcal{X}$, let $K_x = K(x, \dot)$ be the function such that $K_x(y) = K(x, y)$. The set of all linear combinations of these functions forms a vector space $\mathcal{H}_0$ where every element $f \in \mathcal{H}_0$ can be expressed as:
+For all $x \in \mathcal{X}$, let $K(x, \cdot)$ be the function such that maps an element $x^\prime \in \mathcal{X}$ to $K(x, x^\prime)$. The set of all linear combinations of these functions forms a vector space $\mathcal{H}_0$ where every element $f \in \mathcal{H}_0$ can be expressed as:
 %
 \begin{equation}
-  f = $\sum_{i=1}^n a_i K_{x_i}$
+  f(\cdot) = \sum_{x \in \mathcal{X}} a_i K(x, \cdot)
 \end{equation}
 %
 where $n \in \mathbb{N}$, $a_i \in \mathbb{R}$ and $x_i \in \mathcal{X}$ are arbitrary.
@@ -127,10 +135,18 @@ To turn $\mathcal{H}_0$ into a Hilbert space, we first define the inner product 
 %
 \begin{equation}
   \innerProd{\sum_{i=1}^n a_j K_{x_j}, \sum_{j=1}^m b_i K_{y_i}} = \sum_{i=1}^n \sum_{j=1}^m a_i b_j K(x_j, x_j)
+\end{equation}x
+%
+
+Since $\mathcal{H}_0$ may not be complete, we complete $\mathcal{H}_0$ to form a Hilbert space $\mathcal{H}$ by adding the limits of all Cauchy sequences in $\mathcal{H}_0$ to the space.
+
+We can now show the reproducing property:
+%
+\begin{equation}
+	\innerProd{f, K_x} = \innerProd{\sum_{}
 \end{equation}
 %
 
-Since $\mathcal{H}_0$ may not be complete, we complete $\mathcal{H}_0$ to form a Hilbert space $\mathcal{H}$ by adding the limits of all Cauchy sequences in $\mathcal{H}_0$ to the space. \todo{prove reproducing property and uniqueness}.
 \end{proof}
 
 From this, we can see that when we choose a kernel, we also implicitly choose a corresponding RKHS.
