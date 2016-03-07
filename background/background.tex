@@ -100,7 +100,7 @@ A Hilbert space $\mathcal{H}$ of real-valued functions on $\mathcal{X}$ is a \de
 
 So in a RKHS $\mathcal{H}$, evaluating a function $f \in \mathcal{H}$ at a point $x \in \mathcal{X}$ is equivalent to taking the inner product of $f$ with the representer of $x$. Using this reproducing property, we can then define the \defn{reproducing kernel} of $\mathcal{H}$ as $K(x, y) \defeq K_x(y) = \innerProd{K_x, K_y}_\mathcal{H}$.
 
-\section{Positive Definite Kernels}
+\subsection{Positive Definite Kernels}
 The reproducing kernels in the previous section belong to a special class of functions called \defn{positive definite kernels}:
 %
 \begin{definition}
@@ -111,7 +111,7 @@ Let $\mathcal{X}$ be a nonempty set. A symmetric function $K : \mathcal{X} \time
 for any $n \in \mathbb{N}$, $x_1, \dots, x_n \in \mathcal{X}$, and $c_1, \dots, c_n \in \mathbb{R}$.
 \end{definition}
 %
-Since $\sum_{i,j=1}^n c_i c_j K(x, x^\prime) = \innerProd{\sum_{i=1}^n c_i K_x, \sum_{j=1}^n c_j K_{x^\prime}} \geq 0$ by the reproducing property, we can see that all reproducing kernels are positive definite kernels.
+Since $\sum_{i,j=1}^n c_i c_j K(x, x^\prime) = \innerProd{\sum_{i=1}^n c_i K_x, \sum_{j=1}^n c_j K_{x^\prime}} \geq 0$ by the reproducing property, we can see that all reproducing kernels are positive definite.
 
 There are many examples of positive definite kernels, such as linear kernels, polynomial kernels, and Gaussian kernels \todo{give explicit formulas}?.
 
@@ -121,150 +121,90 @@ There are many examples of positive definite kernels, such as linear kernels, po
 \begin{theorem}[Moore-Aronszajn theorem]
 Given a kernel $K(\cdot, \cdot) : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$, there exists a unique RKHS $\mathcal{H}$ of functions on $\mathcal{X}$ for which $K$ is the reproducing kernel.
 \end{theorem}
-%
 \begin{proof}
-For all $x \in \mathcal{X}$, let $K(x, \cdot)$ be the function such that maps an element $x^\prime \in \mathcal{X}$ to $K(x, x^\prime)$. The set of all linear combinations of these functions forms a vector space $\mathcal{H}_0$ where every element $f \in \mathcal{H}_0$ can be expressed as:
+We give a brief sketch of the proof below. For all $x \in \mathcal{X}$, let $K(x, \cdot)$ be the function such that maps an element $x^\prime \in \mathcal{X}$ to $K(x, x^\prime)$. The set of all linear combinations of these functions forms a vector space $\mathcal{H}_0$ where every element $f \in \mathcal{H}_0$ can be expressed as:
 %
 \begin{equation}
-  f(\cdot) = \sum_{x \in \mathcal{X}} a_i K(x, \cdot)
+  f(\cdot) = \sum_{i=1}^n a_i K(x_i, \cdot)
 \end{equation}
 %
 where $n \in \mathbb{N}$, $a_i \in \mathbb{R}$ and $x_i \in \mathcal{X}$ are arbitrary.
 
-To turn $\mathcal{H}_0$ into a Hilbert space, we first define the inner product between two functions $f$ and $g$:
+To turn $\mathcal{H}_0$ into a Hilbert space, we define the inner product between two functions $f(\cdot) = \sum_{i=1}^n a_i K(x_i, \cdot)$ and $g(\cdot) = \sum_{j=1}^m b_j K(y_i, \cdot)$:
 %
 \begin{equation}
-  \innerProd{\sum_{i=1}^n a_j K_{x_j}, \sum_{j=1}^m b_i K_{y_i}} = \sum_{i=1}^n \sum_{j=1}^m a_i b_j K(x_j, x_j)
-\end{equation}x
-%
-
-Since $\mathcal{H}_0$ may not be complete, we complete $\mathcal{H}_0$ to form a Hilbert space $\mathcal{H}$ by adding the limits of all Cauchy sequences in $\mathcal{H}_0$ to the space.
+  \innerProd{\sum_{i=1}^n a_i K(x_i, \cdot), \sum_{j=1}^m b_j K(y_i, \cdot)}_{\mathcal{H}_0} = \sum_{i=1}^n \sum_{j=1}^m a_i b_j K(x_i, y_j)
+\end{equation}
 
 We can now show the reproducing property:
 %
 \begin{align}
-  \innerProd{f, K(x, \cdot)} &= \innerProd{\sum_{y \in \mathcal{X}} b_i K(y, \cdot), K(x, \cdot)}
-                             &= \sum_{y \in \mathcal{X}} \innerProd{K(y, \cdot), K(x, \cdot)}
-                             &= \sum_{y \in \mathcal{X}} K(y, x)
+  \innerProd{f, K(x, \cdot)}_{\mathcal{H}_0} &= \innerProd{\sum_{i=1}^n a_i K(x_i, \cdot), K(x, \cdot)}_{\mathcal{H}_0} \\
+                             &= \sum_{i=1}^n a_i K(x_i, x) \\
                              &= f(x)
 \end{align}
 %
-Hence $K(x, \cdot)$ is the representer of $x$.
+where $K(x, \cdot)$ is the representer of $x$ in $\mathcal{H}$.
+
+Strictly speaking, $\mathcal{H}_0$ is a \defn{pre-RKHS} since it may not be complete. Skipping some details, we can complete $\mathcal{H}_0$ to form a RKHS $\mathcal{H}$ and prove that $K$ is also the reproducing kernel of $\mathcal{H}$.
+
+Finally, we show the uniqueness of $\mathcal{H}$. Let $\mathcal{G}$ be another RKHS with $K$ as its reproducing kernel. Using the reproducing property,
+%
+\begin{equation}
+	\innerProd{K(x, \cdot), K(y, \cdot)}_\mathcal{H} = K(x, y) = \innerProd{K(x, \cdot), K(y, \cdot)}_\mathcal{G}
+\end{equation}
+%
+for any $x, y \in \mathcal{X}$. \todo{by linearity??}
 \end{proof}
 
 From this, we can see that when we choose a kernel, we also implicitly choose a corresponding RKHS.
 
 \subsection{Feature maps}
-
+Given a kernel $K$ over $\mathcal{X}$ with its associated RKHS $\mathcal{H}$, we define the map $\phi(x) \defeq K(x, \cdot)$ and then use the reproducing property to write:
 \begin{align}
-  K(\mathbf{x}, \mathbf{x}^\prime) &= \innerProd{K(\mathbf{x}, \cdot), K(\mathbf{x}^\prime, \cdot)}_\mathcal{H} \\
-                                   &\vcentcolon= \innerProd{\phi(\mathbf{x}), \phi(\mathbf{x}^\prime)}_\mathcal{H}
+  K(x, x^\prime) &= \innerProd{K(x, \cdot), K(x^\prime, \cdot)}_\mathcal{H} \\
+                                   &= \innerProd{\phi(x), \phi(x^\prime)}_\mathcal{H}
 \end{align}
 
-We can view the function $\phi$ as an implicit \defn{feature map} from the input space $\mathcal{X}$ to an inner product space $\mathcal{V}$ called the \defn{feature space}. So evaluating a kernel is equivalent to computing the inner product in a Hilbert space without explicitly mapping between input space and feature space. This technique is known as the \defn{kernel trick}.
-
-\begin{definition}[Gram matrix]
-Given a kernel $k : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ and observations $\{ \mathbf{x}_1, \dotsc, \mathbf{x}_n \} \in \mathcal{X}$, the $n \times n$ real matrix $K$ with elements
-\begin{equation}
-  K_{ij} \defeq k(\mathbf{x}_i, \mathbf{x}_j)
-\end{equation}
-for $1 \leq i, j \leq n$ is called the \defn{Gram matrix} of $k$ with respect to $\mathbf{x}_1, \dotsc, \mathbf{x}_n$.
-\end{definition}
-
-
-\begin{definition}[Positive definite kernel]
-Let $\mathcal{X}$ be a non-empty set. A symmetric function $k : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ is called a \defn{positive definite kernel} (or simply a \defn{kernel}) if the Gram matrix of $k$ with respect to all finite sized observations $\{ \mathbf{x}_1, \dotsc, \mathbf{x}_n \} \in \mathcal{X}$ ($n \in \mathbb{N}$) is positive semi-definite.
-\end{definition}
-
-\begin{theorem}[Mercer's theorem]
-If $k$ is a kernel on $\mathcal{X} \times \mathcal{X}$, then it can be written in the form:
-\begin{equation}
-  k(\mathbf{x}, \mathbf{x}^\prime) = \innerProd{\phi(\mathbf{x}), \phi(\mathbf{x}^\prime)}_\mathcal{V}
-\end{equation}
-for some inner product space $\mathcal{V}$.
-\end{theorem}
-
-
-This is significant. Since , kernels 
-
-As an example, consider the kernel $k(\mathbf{x}, \mathbf{x}^\prime) = \innerProd{\mathbf{x}, \mathbf{x}^\prime}^2$. If we $\mathbf{x}, \mathbf{x}^\prime \in \mathbb{R}^2$, then $k((x_1, x_2)^\intercal, (x_1^\prime, x_2^\prime)^\intercal)$ can be written as
-
-\begin{equation}
-\innerProd{(x_1^2, x_2^2, \sqrt{2} x_1 x_2)^\intercal, (x_1^{\prime 2}, x_2^{\prime 2}, \sqrt{2} x_1^\prime x_2^\prime)^\intercal}
-\end{equation}
-
-Note that this decomposition is not unique, since we can also write
-
-\begin{equation}
-2
-\end{equation}
-
-\section{Reproducing Kernel Hilbert Spaces}
-However, there is a special feature space that is unique to a given kernel. 
-
-Let $\mathbb{F}$ be the space of functions mapping $\mathcal{X}$ to $\mathbb{R}$. We use the feature map $\phi(x) : \mathcal{X} \to \mathbb{F}$:
-\begin{equation}
-	\phi(x) = k(x, \cdot)
-\end{equation}
-It is important to note here that $\phi(x)$ is a \emph{function}. It takes an element $x^\prime \in \mathcal{X}$ and maps it to the real number $k(x, x^\prime)$. In an abuse of notation, we can equivalently write $\phi(x)(x^\prime) = k(x, x^\prime)$.
-
-\begin{equation}
-	f(\cdot) = \sum_{i=1}^n \alpha_i k(x_i, \cdot)
-\end{equation}
-
-\begin{equation}
-	\innerProd{f, g} \defeq \sum_{i=1}^n \sum_{j=1}^{n^\prime} \alpha_i \beta_j k(x_i, x_j^\prime)
-\end{equation}
-
-\begin{definition}[Reproducing kernel]
-	A kernel $k$ is a \defn{reproducing kernel} of a Hilbert space $\mathcal{H}$ if $\forall f \in \mathcal{H}, f(x) = \innerProd{k(x, \cdot), f}_\mathcal{H}$.
-\end{definition}
-
-Using the reproducing property of $\mathcal{H}$, we can express the inner product of two elements in the RKHS $k(x, \cdot)$ and $k(x^\prime, \cdot)$ as we obtain a feature map:
-
-\begin{align}
-	\innerProd{k(x, \cdot), k(x^\prime, \cdot)} &= k(x, x^\prime)
-\end{align}
-
-We use the feature map $\phi(X)$
-
-
+We can view the function $\phi$ as an implicit \defn{feature map} from the input space $\mathcal{X}$ to an RKHS $\mathcal{H}$ called the \defn{feature space}. So evaluating a kernel is equivalent to computing the inner product in a Hilbert space without explicitly mapping between input space and feature space. This technique is known as the \defn{kernel trick}.
 
 \section{Kernel Embedding of Distributions}
-Now that we have established the RKHS to map to, we need a way to map or embed probability distributions in it.
+\todo{We need a way to embed probability distributions in a RKHS}\citet{smola2007hilbert}.
 
-Let $X$ be a random variable with codomain $\Omega$ and probability distribution $P(X)$. Also let $k$ be a kernel on $\Omega \times \Omega$. From the Moore-Aronszajn Theorem, we know there exists an unique RKHS $\mathcal{H}$ where $k$ is a reproducing kernel. Furthermore, we can define the implicit feature map $\phi(x) \defeq k(x, \cdot)$ from $\Omega$ to $\mathcal{H}$ so that $k(x, x^\prime) = \innerProd{phi(x), phi(x)^\prime}$.
+\subsection{Mean map}
+Let $X$ be a random variable over $\Omega$ with probability distribution $P(X)$. Also let $K$ be a kernel on $\Omega \times \Omega$. From the Moore-Aronszajn Theorem, we know there exists an unique RKHS $\mathcal{H}$ where $K$ is a reproducing kernel. Furthermore, we can define the implicit feature map $\phi(x) \defeq K(x, \cdot)$ from $\Omega$ to $\mathcal{H}$ so that $K(x, x^\prime) = \innerProd{\phi(x), \phi(x^\prime)}$.
 
-\begin{definition}[Mean embedding]
-The embedding of $P(X)$ in $\mathcal{H}$ via the \defn{mean embedding} is given by
+To map $P(X)$ to an element in $\mathcal{H}$, we use the mean map:
+%
+\begin{definition}[Mean map]
+The embedding of $P(X)$ in $\mathcal{H}$ via the \defn{mean map} is given by
+%
 \begin{equation}
-  \mu_{X}\nomenclature{$\mu_X$}{Embedding of $X$ in a RKHS via the mean-map} \defeq \E[k(X, \cdot)] = \E[\phi(X)]
+  \mu_{X}\nomenclature{$\mu_X$}{Embedding of $P(X)$ in a RKHS via the mean-map} \defeq \E_X[k(x, \cdot)] = \E_X[\phi(x)]
 \end{equation}
 \end{definition}
-
-The mean embedding of a probability distribution transforms it to an element in $\mathcal{H}$.
-
+%
+For a known distribution $P(X)$ we can compute the mean map as:
+%
 \begin{equation}
   \mu_{X} = \int_\Omega \phi(x) \mathrm{d}P(x)
 \end{equation}
-
-Since we rarely know the true distribution $P(X)$, we can use empirically estimate the mean embedding from samples drawn I.I.D. from $P(X)$:
-
+%
+If we do not know the true distribution $P(X)$, we can empirically estimate the mean map from samples $\{ x_1, \dotsc, x_n \}$ drawn independently and identically distributed from $P(X)$:
+%
 \begin{equation}
-\mu_{X} = \frac{1}{n} \sum_{i=1}^n \phi(x_i)
+   \hat{\mu}_{X} \defeq \frac{1}{n} \sum_{i=1}^n \phi(x_i)
 \end{equation}
 
-This mean embedding has several advantages. Firstly, by the reproducing property of $\mathcal{H}$, the expectation of any function $f \in \mathcal{H}$ can be found by taking its inner product with the kernel embedding:
+\subsection{Properties}
+A natural question to ask is: why do we use this mapping? This section outlines the theoretical properties of the mean map that makes it attractive.
+
+\todo{One property of this mapping is that it is one-to-one for certain choices of $K$ called \defn{characteristic kernels}. Using retains all the statistical features of $P(X)$.}
+The mean map has several advantages. Firstly, by the reproducing property of $\mathcal{H}$, the expectation of any function $f \in \mathcal{H}$ can be found by taking its inner product with the kernel embedding:
 
 \begin{equation}
 \E_X[f(X)] = \innerProd{f, \mu_X}_\mathcal{H}
 \end{equation}
-
-\begin{definition}[Characteristic kernel]
-  Let If the mean ifmap of a kernel is injective, then the kernel is called \defn{characteristic}.
-\end{definition}
-
-So if the kernel we use is characteristic, then any mean embedding in the RKHS retains all the statistical features of the distribution. In other words, no information is lost from this transformation.
 
 \begin{equation}
   k(x,x') = \exp\left(-\frac{1}{2\sigma^2} \normLL{x-x'}^2 \right)
