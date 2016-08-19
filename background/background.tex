@@ -1,7 +1,7 @@
 \chapter{Background}
-A common technique in machine learning is to transform the data into a form that is easier to work with. Examples range from dimensionality reduction, where high-dimensional data are mapped to a lower dimensional space, to feature extraction, where structured data like images and text are mapped to vectors in Euclidean space. We apply the same idea in our work. Instead of directly working with probability distributions, we embed them in a \emph{reproducing kernel Hilbert space} (RKHS) so that each distribution is a single point in the Hilbert space.
+A common technique in machine learning is to transform the data into a form that is easier to work with. Examples range from dimensionality reduction, where high-dimensional data are mapped to a lower dimensional space, to feature extraction, where structured data (like images and text) are mapped to vectors in Euclidean space. We use the same technique in our work. Instead of directly working with probability distributions, we map them to a \emph{reproducing kernel Hilbert space} (RKHS) so that each distribution is a single point in the Hilbert space.
 
-There are two key considerations when using this technique. First, the target space that we map to should have desirable properties that the original space does not have. In our case, Hilbert spaces have the following advantages as a target space:
+When mapping data from the input space to another space, there are two key considerations. First, the target space that we map to should have desirable properties. In our case, Hilbert spaces have the following advantages as a target space:
 %
 \begin{itemize}
   \item Hilbert spaces generalise Euclidean spaces, so we can apply our geometric intuition to elements of the Hilbert space. For instance, Hilbert spaces have a notion of the distance between two points. Since we map distributions to points in the Hilbert space, this gives rise to a distance measure between two distributions, defined as their distance in the Hilbert space \needcite.
@@ -9,15 +9,15 @@ There are two key considerations when using this technique. First, the target sp
   \item They have a relatively simple structure compared to other topological vector spaces \needcite.
 \end{itemize}
 %
-The second criteria is that the transformation should faithfully preserve the characteristics of the original data. Ideally, the mapping is bijective, so we can freely transform back and forth between the two spaces. The mapping used by kernel mean embeddings is injective, so distinct distributions map to distinct points in the Hilbert space, but a point in the Hilbert space does not necessarily have a corresponding point in the original space.
+Secondly, the transformation should faithfully preserve the characteristics of the original data. Ideally, the mapping is bijective, so we can freely transform back and forth between the two spaces. The mapping used by kernel mean embeddings is injective, so distinct distributions map to distinct points in the Hilbert space, but a point in the Hilbert space does not necessarily have a corresponding point in the original space.
 
-The first half of this chapter revolves around defining the target space. We begin by defining vector spaces. Unfortunately, vector spaces lack the necessary properties for our mapping. Instead, we will enrich a vector space with additional properties and operations to form a Hilbert space, which has the desirable properties discussed before. The second half focuses on the mapping itself. We introduce \emph{kernels} as a way of mapping data to a special type of Hilbert space called a reproducing kernel Hilbert space (RKHS). We then show how kernels can be extended to map distributions to a RKHS. We conclude the chapter with a discussion of the properties of this embedding.
+We begin this chapter by defining vector spaces. Unfortunately, vector spaces lack the necessary properties for our mapping. Instead, we will enrich a vector space with additional properties and operations to form a Hilbert space, which has the desirable properties discussed before. The second half focuses on the mapping itself. We introduce \emph{kernels} as a way of mapping data to a special type of Hilbert space called a reproducing kernel Hilbert space (RKHS). We then show how kernels can be extended to map distributions to a RKHS. We conclude the chapter with a discussion of the properties of this embedding.
 
 \section{Vector Spaces}
 Loosely speaking, a vector space is a set of objects, called \defn{vectors}, that can be added together and multiplied by numbers, called \defn{scalars}. More formally,
 %
 \begin{definition}[Vector space]
-A \defn{vector space} over a field\footnote{Informally, a field is a set of elements where addition and multiplication of these elements satisfy several axioms such as associativity and closure. An example of a field is the set of real numbers $\mathbb{R}$.} $\mathbb{F}$ consists of a set $\mathcal{V}$, a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathbb{F}$:
+A \defn{vector space} over a field\footnote{Informally, a field is a set of elements where addition and multiplication of these elements satisfy several axioms such as associativity and closure. An example of a field is the set of real numbers $\mathbb{R}$.} $\mathbb{F}$ is a set $V$ together with a \defn{vector addition} operation $\oplus$, and a \defn{scalar multiplication} operation $\otimes$. It must obey the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$ and $a, b \in \mathbb{F}$:
 %
 \begin{description}
   \item[Associativity] $\mathbf{u} \oplus (\mathbf{v} \oplus \mathbf{w}) = (\mathbf{u} \oplus \mathbf{v}) \oplus \mathbf{w}$.
@@ -28,37 +28,34 @@ A \defn{vector space} over a field\footnote{Informally, a field is a set of elem
 \end{description}
 \end{definition}
 %
-While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^n$, we can also define vector spaces over more complicated objects. For instance, $\mathbb{R}^\mathbb{R}$, the set of functions from $\mathbb{R}$ to $\mathbb{R}$, is a vector space. In this space, we can define vector addition and scalar multiplication as:
+While the canonical example of a vector space is the space of real n-dimensional vectors $\mathbb{R}^n$, we can also define vector spaces over more complicated objects. For instance, $\mathbb{R}^\mathbb{R}$, the set of functions from $\mathbb{R}$ to $\mathbb{R}$, is a vector space, where vector addition and scalar multiplication are given by:
 %
 \begin{align}
   (f \oplus g)(x) &\defeq f(x) g(x) \\
   (a \otimes f)(x) &\defeq a f(x)
 \end{align}
 %
-for any $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$. It is easy to verify that these two operations satisfy all the axioms. The space $\mathbb{R}^\mathbb{R}$ is a powerful example because it shows how mathematical objects, like functions, can be added and multiplied as if they were just ``numbers''.
+for any $f, g \in \mathbb{R}^\mathbb{R}$ and $a \in \mathbb{R}$. It is easy to verify that these two operations satisfy all the axioms of vector spaces. This is a powerful example because it shows how mathematical objects, like functions, can be added and multiplied as if they were just ``numbers''.
 
-\section{Banach Spaces}
-One nice property to have in our target space is the notion of \defn{completeness}. Intuitively, a complete space has no ``holes'' in it. For example, the interval $(0, 1]$ (i.e. the set of real numbers $0 < x \leq 1$) is not complete since $0$ is not in the set, even though the set contains elements arbitrarily close to $0$.
-
-We can capture this intuition about completeness formally. Given a vector space $\mathcal{V}$ over $\mathbb{R}$, let $d : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$ be a \defn{distance function} that satisfies the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$:
+\section{Inner Product Space}
+Unfortunately, vector spaces lack basic geometric notions that we typically associate with Euclidean spaces. For example, there is no notion of the distance between two vectors (why is this bad?). In order to imbue a vector space with geometric (notions), we only need to introduce a single operation called the inner product.
+%
+\begin{definition}[Inner product space]
+An \defn{inner product space} is a vector space $\mathcal{V}$ over field $\mathbb{F}$ with a map $\innerProd{\cdot, \cdot} : \mathcal{V} \times \mathcal{V} \to \mathbb{F}$, called an \defn{inner product}, that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{F}$:
 %
 \begin{description}
-  \item[Positive-definiteness] $d(\mathbf{u}, \mathbf{v}) \geq 0$ and $d(\mathbf{u}, \mathbf{v}) = 0 \Leftrightarrow \mathbf{u} = \mathbf{v}$.
-  \item[Symmetry] $d(\mathbf{u}, \mathbf{v}) = d(\mathbf{v}, \mathbf{u})$.
-  \item[Triangular inequality] $d(\mathbf{u}, \mathbf{w}) \leq d(\mathbf{u}, \mathbf{v}) + d(\mathbf{v}, \mathbf{w})$.
+  \item[Linearity] $\innerProd{a \mathbf{v}, \mathbf{w}}_\mathcal{H} = a \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{u}, \mathbf{w}}_\mathcal{H} + \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$.
+  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
+  \item[Ssymmetry] $\innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{w}, \mathbf{v}}_\mathcal{H}$.
 \end{description}
+\end{definition}
 %
-Given a distance function $d$, a sequence $\langle x_i \rangle_{i=1}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, we have $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other with respect to $d$ until they converge to a limit.
+An example of an inner product space is again the Euclidean space $\mathbb{R}^n$, where the inner product $\innerProd{\mathbf{u}, \mathbf{v}}$ is given by the dot product $\mathbf{u} \cdot \mathbf{v} = \sum_{i=1}^n$.
 
-A vector space $\mathcal{V}$ is \defn{complete} if every Cauchy sequence of vectors in $\mathcal{V}$ converges to a limit also in $\mathcal{V}$. Continuing our example for $(0, 1]$, the sequence $x_i = 1 / i$ is Cauchy and converges to $0$, which is not in the interval. Therefore $(0, 1]$ is not complete.
+From the inner product, we can derive distance and length .
 
-We can now extend a vector space with this notion of completeness:
-%
-\begin{definition}[Banach space]
-A \defn{Banach} space is vector space that is complete with respect to the distance function:
-\begin{equation}
-  d(\mathbf{u}, \mathbf{v}) = \normLL{\mathbf{u} - \mathbf{v}}
-\end{equation}
+In Euclidean space, the \defn{length} of a vector is given by. We can generalise this to inner product spaces as the \defn{norm}:
+\begin{definition}[Norm]
 where $\normLL{\cdot}$ is a function from $\mathcal{V}$ to $\mathbb{R}$ (called the \defn{norm}) that satisfies the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{V}$ and $a \in \mathbb{R}$:
 \begin{description}
   \item[Positive-definiteness] $\normLL{\mathbf{u}} \geq 0$ and $\normLL{\mathbf{u}} = 0 \Leftrightarrow \mathbf{u} = \mathbf{0}$.
@@ -67,30 +64,40 @@ where $\normLL{\cdot}$ is a function from $\mathcal{V}$ to $\mathbb{R}$ (called 
 \end{description}
 \end{definition}
 
-An example of a Banach space is $\mathbb{R}^n$. There are actually an infinite number of norms that can be defined on $\mathbb{R}^n$, with the most common being the L2 norm $\normLL{\mathbf{u}}_2 \defeq \sqrt{\sum_{i=1}^n u_i}$ for a vector $\mathbf{u} \in \mathcal{H}$. 
+The equivalent formulation in an inner product space would be the distance metric $\normLL{\mathbf{u} - \mathbf{v}}$
 
-\section{Hilbert Spaces}
-
-\begin{definition}[Hilbert space]
-A \defn{Hilbert space} $\mathcal{H}$ over $\mathbb{F}$ is a Banach space endowed with a inner product operation $\innerProd{\cdot, \cdot}_\mathcal{H} : \mathcal{H} \times \mathcal{H} \to \mathbb{F}$ satisfying the following axioms for all $\mathbf{u}, \mathbf{v} \in \mathcal{H}$ and $a \in \mathbb{F}$:
+\begin{definition}[Distance]
+Given a vector space $\mathcal{V}$ over $\mathbb{R}$, let $d : \mathcal{V} \times \mathcal{V} \to \mathbb{R}$ be a \defn{distance function} that satisfies the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathcal{V}$:
 %
 \begin{description}
-  \item[Linearity] $\innerProd{a \mathbf{v}, \mathbf{w}}_\mathcal{H} = a \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$ and $\innerProd{\mathbf{u} \oplus \mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{u}, \mathbf{w}}_\mathcal{H} + \innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H}$.
-  \item[Positive-definiteness] $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} \geq 0$ and $\innerProd{\mathbf{v}, \mathbf{v}}_\mathcal{H} = 0 \Leftrightarrow \mathbf{v} = \mathbf{0}$.
-  \item[Ssymmetry] $\innerProd{\mathbf{v}, \mathbf{w}}_\mathcal{H} = \innerProd{\mathbf{w}, \mathbf{v}}_\mathcal{H}$.
+  \item[Positive-definiteness] $d(\mathbf{u}, \mathbf{v}) \geq 0$ and $d(\mathbf{u}, \mathbf{v}) = 0 \Leftrightarrow \mathbf{u} = \mathbf{v}$.
+  \item[Symmetry] $d(\mathbf{u}, \mathbf{v}) = d(\mathbf{v}, \mathbf{u})$.
+  \item[Triangular inequality] $d(\mathbf{u}, \mathbf{w}) \leq d(\mathbf{u}, \mathbf{v}) + d(\mathbf{v}, \mathbf{w})$.
 \end{description}
-%
-where the norm for the Banach space is given by:
-%
-\begin{equation}
-  \normLL{\mathbf{u}}_\mathcal{H} = \sqrt{\innerProd{\mathbf{u}, \mathbf{u}}_\mathcal{H}}
-\end{equation}
-%
 \end{definition}
 
-As we mentioned in the start of this chapter, Hilbert spaces are generalisations of Euclidean spaces, so it should not be surprising that $\mathbb{R}^n$ is a Hilbert space, with the inner product given by $\innerProd{\mathbf{u}, \mathbf{v}}_\mathcal{H} \defeq \sum_{i=0}^n u_i v_i$ for vectors $\mathbf{u}, \mathbf{v} \in \mathcal{H}$. \todo{What about functions?}
+\section{Hilbert Spaces}
+Introducing inner products, norms and distances to a vector space does not yet give us a Hilbert space, which is why an inner product space is sometimes called a pre-Hilbert space. An important property that we are missing is \defn{completeness}.  Intuitively, a complete space has no ``holes'' in it. For example, the interval $(0, 1]$ (i.e. the set of real numbers $0 < x \leq 1$) is not complete since $0$ is not in the set, even though the set contains elements arbitrarily close to $0$. This is an important property to have for our target space, [why]?
 
-\subsection{Positive Definite Kernels}
+We can capture this intuition about completeness formally. Using the distance that we added to our target space, we can define \defn{Cauchy sequences}.
+
+\begin{definition}[Cauchy sequence]
+A sequence $\langle x_i \rangle_{i=1}^\infty$ is \defn{Cauchy} if, for every real number $\epsilon > 0$, there is a positive integer $N$ such that for all positive integers $m, n \geq N$, we have $d(x_m, x_n) < \epsilon$. In other words, members of the sequence get closer and closer to each other with respect to $d$ until they converge to a limit.
+\end{definition}
+
+A vector space $\mathcal{V}$ is \defn{complete} if every Cauchy sequence of vectors in $\mathcal{V}$ converges to a limit also in $\mathcal{V}$. Continuing our example for $(0, 1]$, the sequence $x_i = 1 / i$ is Cauchy and converges to $0$, which is not in the interval. Therefore $(0, 1]$ is not complete.
+
+We can now extend our inner product space with this notion of completeness:
+%
+\begin{definition}[Hilbert space]
+An inner product space is that is complete with respect to its distance function is called a \defn{Hilbert Space}.
+\end{definition}
+
+As we mentioned in the start of this chapter, Hilbert spaces are generalisations of Euclidean spaces, so it should not be surprising that $\mathbb{R}^n$ is a Hilbert space. It turns out that every Cauchy sequence in $\mathbb{R}^n$ converges to an element in that space. In other words, there is no sequence of real-valued vectors that converges to something other than a real-valued vector, such as a vector with imaginary parts.
+
+We began with a vector space, which only provided basic arithmetic. We then added notions of distance and length through the inner product. We finally introduced completeness to arrive at a Hilbert space.
+
+\section{Positive Definite Kernels}
 Now that we have defined Hilbert spaces, we can begin to map things to them. To do this, we will use a special type of function called a \emph{kernel}.
 %
 \begin{definition}
@@ -103,108 +110,100 @@ for any $n \in \mathbb{N}$, $x_1, \dots, x_n \in \mathcal{X}$, and $c_1, \dots, 
 %
 There are many examples of positive definite kernels, such as linear kernels, polynomial kernels, and Gaussian kernels (see Figure).
 
-Given a kernel $k : \mathcal{X}$,  Since $k(\cdot, \cdot)$ is a function over two variables, if we fix one variable to be at $x \in \mathcal{X}$, then $k(\cdot, x)$ is a function from to . This function is called a \emph{feature map}. Where do these feature maps reside? It turns out, next section, that these features maps form a Hilbert space of functions defined by the kernel.
+To use kernels as a mapping, note that $k : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ is a function over two variables. If we fix one variable to be at $x \in \mathcal{X}$, then $k(\cdot, x)$ is the unary map $x^\prime \mapsto k(x, x^\prime)$. In other words, $k(\cdot, x)$ maps $x \in \mathcal{X}$ to a function, called a \emph{feature map}. It turns out, as we will see, that these features maps reside in a Hilbert space of functions defined by the kernel.
 
 \section{Feature maps}
-We will prove ... by constructing a Hilbert space from feature maps. As before, let $k_\mathcal{X} : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ be a kernel over some nonempty set $\mathcal{X}$. For all $x \in \mathcal{X}$, let $k(x, \cdot)$ be the function such that maps an element $x^\prime \in \mathcal{X}$ to $K(x, x^\prime)$. The set of all linear combinations of these functions forms a vector space $\mathcal{H}_0$ where every element $f \in \mathcal{H}_0$ can be expressed as:
+We will show  by constructing a Hilbert space from feature maps. As before, let $k_\mathcal{X} : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ be a kernel over some nonempty set $\mathcal{X}$. Recall that the feature map $k(\cdot, x)$ is a function.
+
+For all $x \in \mathcal{X}$, let $k(x, \cdot)$ be the function such that maps an element $x^\prime \in \mathcal{X}$ to $K(x, x^\prime)$. The set of all linear combinations of these functions forms a vector space $\mathcal{H}_0$ where every element $f \in \mathcal{H}_0$ can be expressed as:
 %
 \begin{equation}
-  f(\cdot) = \sum_{i=1}^n a_i K(x_i, \cdot)
+  f(\cdot) = \sum_{i=1}^n a_i k(x_i, \cdot)
 \end{equation}
 %
 where $n \in \mathbb{N}$, $a_i \in \mathbb{R}$ and $x_i \in \mathcal{X}$ are arbitrary.
 
-To turn $\mathcal{H}_0$ into a Hilbert space, we define the inner product between two functions $f(\cdot) = \sum_{i=1}^n a_i K(x_i, \cdot)$ and $g(\cdot) = \sum_{j=1}^m b_j K(y_i, \cdot)$:
+To turn $\mathcal{H}_0$ into a inner product space, we define the inner product between two functions $f(\cdot) = \sum_{i=1}^n a_i k(x_i, \cdot)$ and $g(\cdot) = \sum_{j=1}^m b_j k(y_i, \cdot)$ as
 %
 \begin{equation}
-  \innerProd{\sum_{i=1}^n a_i K(x_i, \cdot), \sum_{j=1}^m b_j K(y_i, \cdot)}_{\mathcal{H}_0} = \sum_{i=1}^n \sum_{j=1}^m a_i b_j K(x_i, y_j)
+  \innerProd{\sum_{i=1}^n a_i k(x_i, \cdot), \sum_{j=1}^m b_j k(y_i, \cdot)}_{\mathcal{H}_0} = \sum_{i=1}^n \sum_{j=1}^m a_i b_j k(x_i, y_j)
 \end{equation}
 
-Strictly speaking, $\mathcal{H}_0$ is a \defn{pre-RKHS} since it may not be complete. Skipping some details, we can complete $\mathcal{H}_0$ to form a RKHS $\mathcal{H}$ and prove that $K$ is also the reproducing kernel of $\mathcal{H}$.
-
-%\begin{theorem}[Moore-Aronszajn theorem]
-%Given a kernel $K(\cdot, \cdot) : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$, there exists a unique RKHS $\mathcal{H}$ of functions on $\mathcal{X}$ for which $K$ is the reproducing kernel.
-%\end{theorem}
-
-
-
-We can view the function $\phi$ as an implicit \defn{feature map} from the input space $\mathcal{X}$ to an RKHS $\mathcal{H}$ called the \defn{feature space}. So evaluating a kernel is equivalent to computing the inner product in a Hilbert space without explicitly mapping between input space and feature space. This technique is known as the \defn{kernel trick}.
+We can complete $\mathcal{H}_0$ to form a Hilbert space $\mathcal{H}$.
 
 \section{Reproducing kernel Hilbert space}
-Hilbert space is special.
-
-We can now show the reproducing property:
+The Hilbert space we constructed in the previous section has a special property that forms a remarkable connection with kernels:
 %
 \begin{align}
-  \innerProd{f, K(x, \cdot)}_{\mathcal{H}_0} &= \innerProd{\sum_{i=1}^n a_i K(x_i, \cdot), K(x, \cdot)}_{\mathcal{H}_0} \\
-                             &= \sum_{i=1}^n a_i K(x_i, x) \\
-                             &= f(x)
+  \innerProd{f, k(x, \cdot)}_{\mathcal{H}}
+  &= \innerProd{\sum_{i=1}^n a_i k(x_i, \cdot), k(x, \cdot)}_{\mathcal{H}} \\
+  &= \sum_{i=1}^n a_i k(x_i, x) \\
+  &= f(x)
 \end{align}
 %
-where $K(x, \cdot)$ is the representer of $x$ in $\mathcal{H}$.
+In other words, taking the inner product between the feature map of $x$ and any function $f \in \mathcal{H}$ is equivalent to evaluating $f$ at $x$. This property is called the \defn{reproducing property}. A Hilbert space with the reproducing property .
 
+Using this property, we can 
 Given a kernel $K$ over $\mathcal{X}$ with its associated RKHS $\mathcal{H}$, we define the map $\phi(x) \defeq K(x, \cdot)$ and then use the reproducing property to write:
 \begin{align}
   K(x, x^\prime) &= \innerProd{K(x, \cdot), K(x^\prime, \cdot)}_\mathcal{H} \\
                                    &= \innerProd{\phi(x), \phi(x^\prime)}_\mathcal{H}
 \end{align}
 
-
-
-Since $\sum_{i,j=1}^n c_i c_j K(x, x^\prime) = \innerProd{\sum_{i=1}^n c_i K_x, \sum_{j=1}^n c_j K_{x^\prime}} \geq 0$ by the reproducing property, we can see that all reproducing kernels are positive definite.
-
-
-Finally, we show the uniqueness of $\mathcal{H}$. Let $\mathcal{G}$ be another RKHS with $K$ as its reproducing kernel. Using the reproducing property,
-%
-\begin{equation}
-	\innerProd{K(x, \cdot), K(y, \cdot)}_\mathcal{H} = K(x, y) = \innerProd{K(x, \cdot), K(y, \cdot)}_\mathcal{G}
-\end{equation}
-%
-for any $x, y \in \mathcal{X}$. \todo{by linearity??}
-
-From this, we can see that when we choose a kernel, we also implicitly choose a corresponding RKHS.
-
-We define a reproducing kernel Hilbert space (RKHS) to be a Hilbert space of functions whose elements satisfy a useful property\footnote{A more standard and formal definition is to use bounded linear functionals, but our definition does not require familarity with functional analysis. \needcite}:
-%
 \begin{definition}[Reproducing Kernel Hilbert Space]
 A Hilbert space $\mathcal{H}$ of real-valued functions on $\mathcal{X}$ is a \defn{reproducing kernel Hilbert space (RKHS)} if, for every $x \in \mathcal{X}$, there is unique function $K_x \in \mathcal{H}$ (called the \defn{representer} of $x$) with the reproducing property,
 \begin{equation}
   f(x) = \innerProd{f, K_x}_\mathcal{H} \quad \forall f \in \mathcal{H}
 \end{equation}
 \end{definition}
+%
 
-So in a RKHS $\mathcal{H}$, evaluating a function $f \in \mathcal{H}$ at a point $x \in \mathcal{X}$ is equivalent to taking the inner product of $f$ with the representer of $x$. Using this reproducing property, we can then define the \defn{reproducing kernel} of $\mathcal{H}$ as $K(x, y) \defeq K_x(y) = \innerProd{K_x, K_y}_\mathcal{H}$.
+
+\begin{theorem}[Moore-Aronszajn theorem]
+Given a kernel $k(\cdot, \cdot) : \mathcal{X} \times \mathcal{X} \to \mathbb{R}$, there exists a unique RKHS $\mathcal{H}$ of functions on $\mathcal{X}$ for which $k(\cdot, \cdot)$ satisfies the reproducing property.
+\end{theorem}
+\begin{proof}
+In the previous discussions, we constructed a Hilbert space from a kernel and showed how it has the reproducing property. The only thing left is to show the uniqueness of $\mathcal{H}$. Let $\mathcal{G}$ be another RKHS with $k$ as its reproducing kernel. Using the reproducing property,
+%
+\begin{equation}
+	\innerProd{k(x, \cdot), k(y, \cdot)}_\mathcal{H} = K(x, y) = \innerProd{K(x, \cdot), K(y, \cdot)}_\mathcal{G}
+\end{equation}
+%
+for any $x, y \in \mathcal{X}$.
+\end{proof}
+%
+From this, we can see that when we choose a kernel, we also implicitly choose a corresponding RKHS.
+
+We can view the function $k(\cdot, x)$ as an implicit \defn{feature map} from the input space $\mathcal{X}$ to an RKHS $\mathcal{H}$ called the \defn{feature space}. So evaluating a kernel is equivalent to computing the inner product in a Hilbert space without explicitly mapping between input space and feature space. This technique is known as the \defn{kernel trick}.
 
 \section{Kernel Embedding of Distributions}
 We saw in the previous sections how kernels can be used to map individual elements to a RKHS. In this section, we show an extension of this idea to map entire \emph{distributions} of elements to a RKHS \citep{smola2007hilbert}.
 
 \subsection{Mean Embedding}
-Let $X$ be a random variable over $\Omega$ with probability distribution $P(X)$. Also let $K$ be a kernel on $\Omega \times \Omega$. From the Moore-Aronszajn Theorem, we know there exists an unique RKHS $\mathcal{H}$ where $K$ is a reproducing kernel. Furthermore, we can define the implicit feature map $\phi(x) \defeq K(x, \cdot)$ from $\Omega$ to $\mathcal{H}$ so that $K(x, x^\prime) = \innerProd{\phi(x), \phi(x^\prime)}$.
-
-To map $P(X)$ to an element in $\mathcal{H}$, we use the mean map:
+Let $X$ be a random variable over $\mathcal{X}$ with distribution $P(X)$. Also let $k_\mathcal{X}$ be a kernel on $\mathcal{X} \times \mathcal{X}$. From the Moore-Aronszajn Theorem, we know there exists an unique RKHS $\mathcal{H}$ where $k$ is a reproducing kernel. To map $P(X)$ to an element in $\mathcal{H}$, we use the mean map :
 %
 \begin{definition}[Kernel mean]
-Let $k_\mathcal{X}$ be a kernel on a \todo{measurable space} $\mathcal{X}$ and $\mathcal{H}$ be its induced RKHS. The \defn{kernel mean} of a probability distribution $P(X)$ on $\mathcal{X}$ is given by
+Let $k_\mathcal{X}$ be a kernel on a \todo{measurable space} $\mathcal{X}$ and $\mathcal{H}$ be its induced RKHS. The \defn{kernel mean} of a probability distribution $P(X)$ on $\mathcal{X}$ is given by \citep{smola2007hilbert}
 %
 \begin{equation}
-  \mu[P(X)]\nomenclature{$\mu[X]$}{The kernel mean of $P(X)$} \defeq \E_X[k(\cdot, x)] = \int_\mathcal{X} k_\mathcal{X}(\cdot, x) \,\mathrm{d}P(X)
+  \mu[P(X)]\nomenclature{$\mu[P(X)]$}{The kernel mean of $P(X)$} \defeq \E_X[k(\cdot, x)] = \int_\mathcal{X} k_\mathcal{X}(\cdot, x) \,\mathrm{d}P(X) \quad\in \mathcal{H}
 \end{equation}
 \end{definition}
 %
-If we do not know the true distribution $P(X)$, we can empirically estimate the kernel mean from samples $\{ X_1, \dotsc, X_n \}$ drawn i.i.d. from $P(X)$:
+In other words, the kernel mean is the expected feature map of $x$ under $P(X)$. Hence, like the feature map, the kernel mean is a function in $\mathcal{H}$.
+
+If we do not know the true distribution $P(X)$, which is quite common in practice, we can empirically estimate the kernel mean from samples $\{ x_1, \dotsc, x_n \}$ drawn independently from $P(X)$:
 %
 \begin{equation}
-   \hat{\mu}_{X} \defeq \frac{1}{n} \sum_{i=1}^n k_\mathcal{X}(\cdot, X_i)
+   \hat{\mu}[P(X)]\nomenclature{$\hat{\mu}[P(X)]$} \defeq \frac{1}{n} \sum_{i=1}^n k_\mathcal{X}(\cdot, x_i) \quad\in \mathcal{H}
 \end{equation}
 
-\subsection{Conditional Mean Embedding}
-A natural question to ask is: why do we use this mapping? This section outlines the theoretical properties of the mean map that makes it attractive.
+A natural question to ask is: why do we use this particular mapping? This section outlines the theoretical properties of the kernel mean that makes it attractive.
 
-\todo{One property of this mapping is that it is one-to-one for certain choices of $K$ called \defn{characteristic kernels}. Using retains all the statistical features of $P(X)$.}
-The mean map has several advantages. Firstly, by the reproducing property of $\mathcal{H}$, the expectation of any function $f \in \mathcal{H}$ can be found by taking its inner product with the kernel embedding:
-
+The kernel mean has several advantages. Firstly, by the reproducing property of $\mathcal{H}$, the expectation of any function $f \in \mathcal{H}$ can be found by taking its inner product with the kernel embedding:
+%
 \begin{equation}
-\E_X[f(X)] = \innerProd{f, \mu_X}_\mathcal{H}
+\E_X[f(x)] = \innerProd{f, \mu[P(X)]}_\mathcal{H}
 \end{equation}
 
 \begin{equation}
@@ -224,5 +223,29 @@ An important concept t
 \begin{equation}
   C_{Y \mid X} = C_{YX} C_{XX}^{-1}
 \end{equation}
+
+\subsection{Conditional Kernel Mean}
+We now focus on the kernel mean of conditional distributions, which forms the foundation of our method. Let $X$ and $Y$ be random variables over measurable spaces $\mathcal{X}$ and $\mathcal{Y}$, respectively. Given kernels $k_\mathcal{X}$ and $k_\mathcal{Y}$ on $\mathcal{X}$ and $\mathcal{Y}$, respectively, the embedding of $\mu[P(Y \mid x)]$ is defined as,
+%
+\begin{equation}
+  \label{eq:conditional-kernel-mean}
+  \mu[P(Y \mid x)] = \mathbb{E}_{Y \mid x}[k_\mathcal{Y}(\cdot, y)] = \int_\mathcal{Y} k_\mathcal{Y}(\cdot, y) \mathrm{d}{P(Y \mid x)}.
+\end{equation}
+%
+Given i.i.d. samples $\{ (x_i, y_i) \}_{i=1}^n$ from the joint distribution $P(X, Y)$, the empirical estimate of Equation \ref{eq:conditional-kernel-mean} is given by the weighted sum \cite{song2009hilbert}:
+%
+\begin{equation}
+  \label{eq:weighted-kernel-mean}
+  \widehat{\mu}[P(Y \mid x)] = \sum_{i=1}^n w_i k_\mathcal{Y}(\cdot, y_i),
+\end{equation}
+%
+Each weight $w_i$ is given by:
+\begin{equation}
+w_i = ((K + n \epsilon_n I_n)^{-1} \mathbf{k}_x)_i
+\end{equation}
+%
+where $K$ is the Gram matrix $(k_\mathcal{X}(x_i, x_j)) \in \mathbb{R}^{n \times n}$, $I_n$ is the $n \times n$ identity matrix, $\mathbf{k}_x$ is the vector $(k_\mathcal{X}(x, x_i)) \in \mathbb{R}^n$, and $\epsilon_n$ is a regularisation parameter to reduce overfitting.
+%
+The empirical kernel mean of marginal distributions from Equation \ref{eq:empirical-kernel-mean} is simply a special case of Equation \ref{eq:weighted-kernel-mean} with uniform weights $w_i = 1/n$. Indeed, non-uniform weights capture the effect of conditioning on $X = x$. When $\epsilon_n$ decreases at an appropriate rate as $n \rightarrow \infty$, this empirical embedding converges to the true conditional distribution, albeit at a slower rate than the marginal case \cite{song2009hilbert}.
 
 \subsection{Kernel Bayes' Rule}
