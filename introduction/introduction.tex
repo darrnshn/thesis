@@ -1,4 +1,32 @@
 \chapter{Introduction}
 
-It has those serifs because angles, compared to curves, require less bytes to be stored on a hard drive, and that was a problem in the time Charter was made. Hence, Charter was designed for low-resolution printing, and it works well in that environment, but if you print in high-resolution or with a type size of 12+pt it may look a bit "blunt".
-On the other side it is an economical (in terms of space) and serious typeface, very readable and with nice proportions, having a large but not bloated x-height.
+Longitudinal studies are datasets that track information about multiple individuals over time.
+
+Such studies are ``longitudinal'', in the sense that each individual has a sequence of data points that form a \emph{trajectory} through time. This makes longitudinal studies extremely valuable in examining patterns of change over time. Figure gives some examples of longitudinal data.
+
+
+Compared to other types of data such as time series or regression data, longitudinal data have 
+\begin{description}
+\item[Different response types] It is quite common to collect responses of different types (e.g. continuous, discrete).
+\item[Missing data] For large longitudinal studies, it is unlikely that every 
+\end{description}
+
+The analysis of longitudinal data can be divided into two parts: modelling and inference. In modelling, we construct a \emph{statistical model} that faithfully captures or explains the underlying patterns and processes in the data. In inference, we interpret our model in order to make predictions or conclusions. we use 
+example on cows. A simple model would be to first find
+- average
+- linear regression
+- In this thesis, we focus purely on the statistical modelling of longitudinal data. Inference tends to require domain-specific knowledge etc., so it is beyond the scope of this thesis.
+
+There are many existing models for longitudinal data. We focus on a class of models called \emph{probabilistic models}, where we the probability distribution of a trajectory. Probabilistic models are useful because:
+\begin{itemize}
+\item You can answer queries
+\item If you have several competing models, you can use Bayesian model selection.
+\end{itemize}
+
+Unfortunately, most existing probabilistic methods for longitudinal data make \emph{parametric assumptions}. In other words, they make assumptions about the distribution blah. For instance, the regression model in our cow milk example makes an assumption that the noise is Gaussian.
+
+- Example why Gaussian assumptions could break.
+
+In this thesis, we explore a class of probabilistic methods called \emph{non-parametric} models. There are many definitions of non-parametric, but here, we mean you do not have to specify a specific probability distribution a-priori in these models. In other words, the underlying distribution of the process is learned from training data on-the-fly.
+
+The thesis is structured as follows: - background, -literature review -markov models, - noisy models, - latent models
